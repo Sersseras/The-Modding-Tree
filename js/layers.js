@@ -1,28 +1,71 @@
-addLayer("p", {
-    name: "prestige", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "P", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
-    startData() { return {
-        unlocked: true,
-		points: new Decimal(0),
-    }},
-    color: "#4BDC13",
-    requires: new Decimal(10), // Can be a function that takes requirement increases into account
-    resource: "prestige points", // Name of prestige currency
-    baseResource: "points", // Name of resource prestige is based on
-    baseAmount() {return player.points}, // Get the current amount of baseResource
-    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.5, // Prestige currency exponent
-    gainMult() { // Calculate the multiplier for main currency from bonuses
+addLayer("alvi", {
+    symbol: "A",
+    position: 0,
+    startData() {
+        return {
+            unlocked: true,
+            points: new Decimal(0),
+        }
+    },
+    color: "#FF0000",
+    requires: new Decimal(10),
+    resource: "alvi points",
+    baseResource: "points",
+    baseAmount() { return player.points },
+    type: "normal",
+    exponent: 0.5,
+    gainMult() {
         mult = new Decimal(1)
+        if (hasUpgrade(this.layer, 13)) mult = mult.times(upgradeEffect(this.layer, 13))
         return mult
     },
-    gainExp() { // Calculate the exponent on main currency from bonuses
+    gainExp() {
         return new Decimal(1)
     },
-    row: 0, // Row the layer is in on the tree (0 is the first row)
+    row: 0,
     hotkeys: [
-        {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        { key: "a", description: "A: Reset for Alvi points", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
-    layerShown(){return true}
+    upgrades: {
+        11: {
+            title: "Start",
+            description: "Gain 1 point per second.",
+            cost: new Decimal(1),
+            effect() {
+                return 1
+            },
+            effectDisplay() { return "+" + format(upgradeEffect(this.layer, this.id)) },
+        },
+        12: {
+            title: "Start more you Naischer",
+            description: "Multiply point gain based on Alvi points\nFormula: x^(1/2)+1",
+            cost: new Decimal(1),
+            effect() {
+                return player[this.layer].points.pow(0.5).add(1)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" },
+            unlocked() { return hasUpgrade(this.layer, 11) }
+        },
+        13: {
+            title: "More Alvi is always better",
+            description: "Multiply Alvi point gain based on points\nFormula: ln(x+1)",
+            cost: new Decimal(10),
+            effect() {
+                return player.points.add(1).ln()
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" },
+            unlocked() { return hasUpgrade(this.layer, 12) }
+        },
+        14: {
+            title: "Why, when I start a Modding Tree, it is always you four?",
+            description: "Multiply point gain based on points\nFormula: log(x+1)+1",
+            cost: new Decimal(25),
+            effect() {
+                return player.points.add(1).log(10).add(1)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" },
+            unlocked() { return hasUpgrade(this.layer, 13) }
+        }
+    },
+    layerShown() { return true }
 })
