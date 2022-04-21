@@ -13,15 +13,14 @@ addLayer("alvi", {
     baseResource: "points",
     baseAmount() { return player.points },
     type: "normal",
-    exponent: 0.5,
-    gainMult() {
+    getResetGain() {
+        //multiplying
         mult = new Decimal(1)
         if (hasUpgrade(this.layer, 13)) mult = mult.times(upgradeEffect(this.layer, 13))
-        return mult
+
+        return player.points.times(0.1).pow(0.5).times(mult)
     },
-    gainExp() {
-        return new Decimal(1)
-    },
+    prestigeButtonText() { return "Reset for " + format(getResetGain(this.layer)) + " Alvi points\nFormula:(x/10)^(1/2)" },
     row: 0,
     hotkeys: [
         { key: "a", description: "A: Reset for Alvi points", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
@@ -29,7 +28,7 @@ addLayer("alvi", {
     upgrades: {
         11: {
             title: "Start",
-            description: "Gain 1 point per second.",
+            description: "Gain 1 point per second",
             cost: new Decimal(1),
             effect() {
                 return 1
@@ -68,4 +67,21 @@ addLayer("alvi", {
         }
     },
     layerShown() { return true }
+})
+
+addLayer("achievements", {
+    symbol: "O",
+    startData() {
+        return {
+            unlocked: true,
+        }
+    },
+    row: "side",
+    tooltip() { return "Achievements" },
+    achievements: {
+        11: {
+            name: "Start",
+            done() { return hasUpgrade('alvi', 11) },
+        }
+    },
 })
