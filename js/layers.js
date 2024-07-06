@@ -188,11 +188,13 @@ addLayer("Numbers", {
         return new Decimal(1);
       },
       display() {
-        return "You have " +
+        return (
+          "You have " +
           getBuyableAmount(this.layer, this.id) +
-          hasUpgrade(this.layer, 14)
-          ? " {∅}\nCost: <b>0</b>"
-          : " {∅}\nCost: <b>0</b> and {}";
+          (hasUpgrade(this.layer, 14)
+            ? " {∅}\nCost: <b>0</b>"
+            : " {∅}\nCost: <b>0</b> and {}")
+        );
       },
       canAfford() {
         return (
@@ -234,11 +236,13 @@ addLayer("Numbers", {
         return new Decimal(1);
       },
       display() {
-        return "You have " +
+        return (
+          "You have " +
           getBuyableAmount(this.layer, this.id) +
-          hasUpgrade(this.layer, 14)
-          ? " {∅, {∅}}\nCost: <b>1</b>"
-          : " {∅, {∅}}\nCost: <b>0</b>, <b>1</b> and {}";
+          (hasUpgrade(this.layer, 14)
+            ? " {∅, {∅}}\nCost: <b>1</b>"
+            : " {∅, {∅}}\nCost: <b>0</b>, <b>1</b> and {}")
+        );
       },
       canAfford() {
         return (
