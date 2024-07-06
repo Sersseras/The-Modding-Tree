@@ -42,7 +42,10 @@ function getPointGen() {
   if (!canGenPoints()) return new Decimal(0);
 
   let gain = new Decimal(0);
-
+  if (hasUpgrade("Numbers", 11)) gain = gain.add(1);
+  if (hasUpgrade("Numbers", 12)) gain = gain.mul(2);
+  if (hasUpgrade("Numbers", 13))
+    gain = gain.mul(tmp["Numbers"].upgrades[13].effect);
   return gain;
 }
 
