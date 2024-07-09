@@ -42,10 +42,33 @@ function getPointGen() {
   if (!canGenPoints()) return new Decimal(0);
 
   let gain = new Decimal(0);
-  if (hasUpgrade("Numbers", 11)) gain = gain.add(1);
-  if (hasUpgrade("Numbers", 12)) gain = gain.mul(2);
+
+  let add = new Decimal(0);
+  if (hasUpgrade("Numbers", 11))
+    add = add.add(tmp["Numbers"].upgrades[11].effect);
+  if (getBuyableAmount("Groups", 11).gte(1))
+    add = add.add(tmp["Groups"].buyables[11].effect);
+
+  let mul = new Decimal(1);
+  if (hasUpgrade("Numbers", 12))
+    mul = mul.mul(tmp["Numbers"].upgrades[12].effect);
   if (hasUpgrade("Numbers", 13))
-    gain = gain.mul(tmp["Numbers"].upgrades[13].effect);
+    mul = mul.mul(tmp["Numbers"].upgrades[13].effect);
+
+  let pow = new Decimal(1);
+  if (getBuyableAmount("Groups", 12).gte(1))
+    add = add.mul(tmp["Groups"].buyables[12].effect);
+  if (getBuyableAmount("Groups", 13).gte(1))
+    add = add.mul(tmp["Groups"].buyables[13].effect);
+  if (getBuyableAmount("Groups", 14).gte(1))
+    add = add.mul(tmp["Groups"].buyables[14].effect);
+  if (getBuyableAmount("Groups", 15).gte(1))
+    add = add.mul(tmp["Groups"].buyables[15].effect);
+  if (getBuyableAmount("Groups", 16).gte(1))
+    add = add.mul(tmp["Groups"].buyables[16].effect);
+
+  gain = gain.add(add).mul(mul).pow(pow);
+
   return gain;
 }
 
