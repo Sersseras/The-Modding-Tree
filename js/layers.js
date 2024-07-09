@@ -8,7 +8,7 @@ addLayer("Numbers", {
     };
   },
   color: "#00FF00",
-  requires: new Decimal(10),
+  requires: new Decimal(1),
   resource: "{}",
   baseResource: "points",
   baseAmount() {
@@ -69,9 +69,9 @@ addLayer("Numbers", {
     },
     12: {
       title: "Bregeneration II",
-      description: "Bre gain is twice as fast",
+      description: "Bre gain is tripled",
       effect() {
-        return new Decimal(2);
+        return new Decimal(3);
       },
       fullDisplay() {
         return (
@@ -378,7 +378,7 @@ addLayer("Numbers", {
         setBuyableAmount(
           this.layer,
           14,
-          getBuyableAmount(this.layer, 13).sub(this.cost())
+          getBuyableAmount(this.layer, 14).sub(this.cost())
         );
         setBuyableAmount(
           this.layer,
@@ -436,12 +436,12 @@ addLayer("Numbers", {
         setBuyableAmount(
           this.layer,
           14,
-          getBuyableAmount(this.layer, 13).sub(this.cost())
+          getBuyableAmount(this.layer, 14).sub(this.cost())
         );
         setBuyableAmount(
           this.layer,
           15,
-          getBuyableAmount(this.layer, 14).sub(this.cost())
+          getBuyableAmount(this.layer, 15).sub(this.cost())
         );
         setBuyableAmount(
           this.layer,
@@ -457,6 +457,24 @@ addLayer("Numbers", {
       },
     },
   },
+  layerShown() {
+    return true;
+  },
+});
+
+addLayer("Groups", {
+  symbol: "G",
+  position: 0,
+  startData() {
+    return {
+      unlocked: true,
+    };
+  },
+  color: "#FF00FF",
+  type: "none",
+  row: 1,
+  upgrades: {},
+  buyables: {},
   layerShown() {
     return true;
   },
