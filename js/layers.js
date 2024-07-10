@@ -11,7 +11,7 @@ addLayer("Numbers", {
   color: "#00FF00",
   requires: new Decimal(10),
   resource: "{}",
-  baseResource: "points",
+  baseResource: "Bres",
   baseAmount() {
     return player.points;
   },
@@ -183,8 +183,30 @@ addLayer("Numbers", {
       },
       unlocked() {
         return (
-          getBuyableAmount(this.layer, 16).gte(1) || hasUpgrade(this.layer, 14)
+          getBuyableAmount(this.layer, 16).gte(1) || hasUpgrade(this.layer, 15)
         );
+      },
+    },
+    16: {
+      title: "AUTOMATION BABY",
+      description: "Automatically buys numbers <b>0</b> to <b>5</b>",
+      fullDisplay() {
+        return (
+          "<h3>" +
+          this.title +
+          "</h3><br>" +
+          this.description +
+          "<br><br>Cost:" +
+          format(this.cost) +
+          " Bres"
+        );
+      },
+      cost: new Decimal(1000000),
+      currencyInternalName() {
+        return "points";
+      },
+      unlocked() {
+        return hasUpgrade(this.layer, 15) || hasUpgrade(this.layer, 15);
       },
     },
   },
@@ -192,7 +214,7 @@ addLayer("Numbers", {
     11: {
       title: "0",
       cost(x) {
-        return new Decimal(2).pow(x);
+        return new Decimal(2).pow(x).round();
       },
       display() {
         return (
@@ -266,7 +288,7 @@ addLayer("Numbers", {
     13: {
       title: "2",
       cost(x) {
-        return new Decimal(2).pow(x);
+        return new Decimal(2).pow(x).round();
       },
       display() {
         return (
@@ -323,7 +345,7 @@ addLayer("Numbers", {
     14: {
       title: "3",
       cost(x) {
-        return new Decimal(2).pow(x);
+        return new Decimal(2).pow(x).round();
       },
       display() {
         return (
@@ -377,7 +399,7 @@ addLayer("Numbers", {
     15: {
       title: "4",
       cost(x) {
-        return new Decimal(2).pow(x);
+        return new Decimal(2).pow(x).round();
       },
       display() {
         return (
@@ -436,7 +458,7 @@ addLayer("Numbers", {
     16: {
       title: "5",
       cost(x) {
-        return new Decimal(2).pow(x);
+        return new Decimal(2).pow(x).round();
       },
       display() {
         return (
@@ -497,9 +519,46 @@ addLayer("Numbers", {
         );
       },
     },
+    17: {
+      title: "6",
+      cost(x) {
+        return new Decimal(2).pow(x).mul(2).round();
+      },
+      display() {
+        return (
+          "You have " +
+          getBuyableAmount(this.layer, this.id) +
+          " <b>5</b> ∪ {<b>5</b>}\nCost: " +
+          this.cost() +
+          " <b>5</b>"
+        );
+      },
+      canAfford() {
+        return getBuyableAmount(this.layer, 16).gte(this.cost());
+      },
+      buy() {
+        setBuyableAmount(
+          this.layer,
+          16,
+          getBuyableAmount(this.layer, 16).sub(this.cost())
+        );
+        setBuyableAmount(
+          this.layer,
+          this.id,
+          getBuyableAmount(this.layer, this.id).add(1)
+        );
+      },
+      unlocked() {
+        return getBuyableAmount("Groups", 19).gte(1);
+      },
+    },
   },
   layerShown() {
     return true;
+  },
+  automate() {
+    if (hasUpgrade(this.layer, 16))
+      for (let i = 11; i <= 16; i++) buyBuyable(this.layer, i);
   },
 });
 
@@ -542,12 +601,37 @@ addLayer("Groups", {
         );
       },
     },
+    12: {
+      title: "Semidirect Product",
+      description: "Like the direct product, just more complicated",
+      fullDisplay() {
+        return (
+          "<h3>" +
+          this.title +
+          "</h3><br>" +
+          this.description +
+          "<br><br>Cost:" +
+          this.cost +
+          " <b>6</b>"
+        );
+      },
+      cost: new Decimal(1),
+      currencyInternalName() {
+        return "17";
+      },
+      currencyLocation() {
+        return player["Numbers"].buyables;
+      },
+      unlocked() {
+        return hasUpgrade(this.layer, 11);
+      },
+    },
   },
   buyables: {
     11: {
       title: "{e}",
       cost(x) {
-        return new Decimal(2).pow(x);
+        return new Decimal(2).pow(x).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id);
@@ -582,7 +666,7 @@ addLayer("Groups", {
     12: {
       title: "Z2 = S2 = D2",
       cost(x) {
-        return new Decimal(2).pow(x);
+        return new Decimal(2).pow(x).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.5);
@@ -613,11 +697,20 @@ addLayer("Groups", {
           getBuyableAmount(this.layer, this.id).add(1)
         );
       },
+      unlocked() {
+        return (
+          getBuyableAmount(this.layer, 11).gte(1) ||
+          getBuyableAmount(this.layer, this.id).gte(1) ||
+          getBuyableAmount(this.layer, 16).gte(1) ||
+          getBuyableAmount(this.layer, 17).gte(1) ||
+          getBuyableAmount(this.layer, 18).gte(1)
+        );
+      },
     },
     13: {
       title: "Z3 = A3",
       cost(x) {
-        return new Decimal(2).pow(x);
+        return new Decimal(2).pow(x).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.66);
@@ -648,11 +741,19 @@ addLayer("Groups", {
           getBuyableAmount(this.layer, this.id).add(1)
         );
       },
+      unlocked() {
+        return (
+          getBuyableAmount(this.layer, 12).gte(1) ||
+          getBuyableAmount(this.layer, this.id).gte(1) ||
+          getBuyableAmount(this.layer, 16).gte(1) ||
+          getBuyableAmount(this.layer, 18).gte(1)
+        );
+      },
     },
     14: {
       title: "Z4 = Dic1",
       cost(x) {
-        return new Decimal(2).pow(x);
+        return new Decimal(2).pow(x).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.75);
@@ -666,6 +767,12 @@ addLayer("Groups", {
           " <b>4</b><br><br>Currently: ^" +
           format(this.effect()) +
           " Bre gain"
+        );
+      },
+      unlocked() {
+        return (
+          getBuyableAmount(this.layer, 13).gte(1) ||
+          getBuyableAmount(this.layer, this.id).gte(1)
         );
       },
       canAfford() {
@@ -687,7 +794,7 @@ addLayer("Groups", {
     15: {
       title: "Z5",
       cost(x) {
-        return new Decimal(2).pow(x);
+        return new Decimal(2).pow(x).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.8);
@@ -718,11 +825,19 @@ addLayer("Groups", {
           getBuyableAmount(this.layer, this.id).add(1)
         );
       },
+      unlocked() {
+        return (
+          getBuyableAmount(this.layer, 14).gte(1) ||
+          getBuyableAmount(this.layer, this.id).gte(1) ||
+          getBuyableAmount(this.layer, 17).gte(1) ||
+          getBuyableAmount(this.layer, 18).gte(1)
+        );
+      },
     },
     16: {
       title: "Z6 = Z2 × Z3",
       cost(x) {
-        return new Decimal(2).pow(x);
+        return new Decimal(2).pow(x).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.83);
@@ -761,10 +876,159 @@ addLayer("Groups", {
           getBuyableAmount(this.layer, this.id).add(1)
         );
       },
+      unlocked() {
+        return hasUpgrade(this.layer, 11);
+      },
+    },
+    17: {
+      title: "Z10 = Z2 × Z5",
+      cost(x) {
+        return new Decimal(2).pow(x).round();
+      },
+      effect() {
+        return getBuyableAmount(this.layer, this.id).add(1).pow(0.9);
+      },
+      display() {
+        return (
+          "You have " +
+          getBuyableAmount(this.layer, this.id) +
+          " Cyclic Groups of Order 10\nCost: " +
+          this.cost() +
+          " <b>Z2</b> and <b>Z5</b><br><br>Currently: ^" +
+          format(this.effect()) +
+          " Bre gain"
+        );
+      },
+      canAfford() {
+        return (
+          getBuyableAmount(this.layer, 12).gte(this.cost()) &&
+          getBuyableAmount(this.layer, 15).gte(this.cost())
+        );
+      },
+      buy() {
+        setBuyableAmount(
+          this.layer,
+          12,
+          getBuyableAmount(this.layer, 12).sub(this.cost())
+        );
+        setBuyableAmount(
+          this.layer,
+          15,
+          getBuyableAmount(this.layer, 15).sub(this.cost())
+        );
+        setBuyableAmount(
+          this.layer,
+          this.id,
+          getBuyableAmount(this.layer, this.id).add(1)
+        );
+      },
+      unlocked() {
+        return hasUpgrade(this.layer, 11);
+      },
+    },
+    18: {
+      title: "Z15 = Z3 × Z5",
+      cost(x) {
+        return new Decimal(2).pow(x).round();
+      },
+      effect() {
+        return getBuyableAmount(this.layer, this.id).add(1).pow(0.93);
+      },
+      display() {
+        return (
+          "You have " +
+          getBuyableAmount(this.layer, this.id) +
+          " Cyclic Groups of Order 15\nCost: " +
+          this.cost() +
+          " <b>Z3</b> and <b>Z5</b><br><br>Currently: ^" +
+          format(this.effect()) +
+          " Bre gain"
+        );
+      },
+      canAfford() {
+        return (
+          getBuyableAmount(this.layer, 13).gte(this.cost()) &&
+          getBuyableAmount(this.layer, 15).gte(this.cost())
+        );
+      },
+      buy() {
+        setBuyableAmount(
+          this.layer,
+          13,
+          getBuyableAmount(this.layer, 13).sub(this.cost())
+        );
+        setBuyableAmount(
+          this.layer,
+          15,
+          getBuyableAmount(this.layer, 15).sub(this.cost())
+        );
+        setBuyableAmount(
+          this.layer,
+          this.id,
+          getBuyableAmount(this.layer, this.id).add(1)
+        );
+      },
+      unlocked() {
+        return hasUpgrade(this.layer, 11);
+      },
+    },
+    19: {
+      title: "K4 = D4 = (Z2)<sup>2</sup>",
+      cost(x) {
+        return new Decimal(2).pow(x).mul(2).round();
+      },
+      effect() {
+        return getBuyableAmount(this.layer, this.id);
+      },
+      display() {
+        return (
+          "You have " +
+          getBuyableAmount(this.layer, this.id) +
+          " Klein Groups\nCost: " +
+          this.cost() +
+          " <b>Z2</b><br><br>Currently: +" +
+          this.effect() +
+          " more numbers unlocked"
+        );
+      },
+      canAfford() {
+        return getBuyableAmount(this.layer, 12).gte(this.cost());
+      },
+      buy() {
+        setBuyableAmount(
+          this.layer,
+          12,
+          getBuyableAmount(this.layer, 12).sub(this.cost())
+        );
+        setBuyableAmount(
+          this.layer,
+          this.id,
+          getBuyableAmount(this.layer, this.id).add(1)
+        );
+      },
+      unlocked() {
+        return hasUpgrade(this.layer, 11);
+      },
     },
   },
   layerShown() {
     return hasUpgrade("Numbers", 15);
+  },
+  tabFormat: {
+    "Main tab": {
+      content: [["buyable", 11], ["buyable", 19], "blank", "upgrades"],
+    },
+    "Cyclic Groups": {
+      content: [
+        ["buyable", 12],
+        ["buyable", 13],
+        ["buyable", 14],
+        ["buyable", 15],
+        ["buyable", 16],
+        ["buyable", 17],
+        ["buyable", 18],
+      ],
+    },
   },
 });
 

@@ -66,6 +66,10 @@ function getPointGen() {
     add = add.mul(tmp["Groups"].buyables[15].effect);
   if (getBuyableAmount("Groups", 16).gte(1))
     add = add.mul(tmp["Groups"].buyables[16].effect);
+  if (getBuyableAmount("Groups", 17).gte(1))
+    add = add.mul(tmp["Groups"].buyables[17].effect);
+  if (getBuyableAmount("Groups", 18).gte(1))
+    add = add.mul(tmp["Groups"].buyables[18].effect);
 
   gain = gain.add(add).mul(mul).pow(pow);
 
