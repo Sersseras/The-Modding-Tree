@@ -56,24 +56,35 @@ function getPointGen() {
     mul = mul.mul(tmp["Numbers"].upgrades[13].effect);
 
   let pow = new Decimal(1);
-  if (getBuyableAmount("Groups", 12).gte(1))
-    add = add.mul(tmp["Groups"].buyables[12].effect);
-  if (getBuyableAmount("Groups", 13).gte(1))
-    add = add.mul(tmp["Groups"].buyables[13].effect);
-  if (getBuyableAmount("Groups", 14).gte(1))
-    add = add.mul(tmp["Groups"].buyables[14].effect);
-  if (getBuyableAmount("Groups", 15).gte(1))
-    add = add.mul(tmp["Groups"].buyables[15].effect);
-  if (getBuyableAmount("Groups", 16).gte(1))
-    add = add.mul(tmp["Groups"].buyables[16].effect);
-  if (getBuyableAmount("Groups", 17).gte(1))
-    add = add.mul(tmp["Groups"].buyables[17].effect);
-  if (getBuyableAmount("Groups", 18).gte(1))
-    add = add.mul(tmp["Groups"].buyables[18].effect);
+  pow = pow.mul(cyclicEffect());
 
   gain = gain.add(add).mul(mul).pow(pow);
 
   return gain;
+}
+
+function cyclicEffect() {
+  let pow = new Decimal(1);
+  if (getBuyableAmount("Groups", 12).gte(1))
+    pow = pow.mul(tmp["Groups"].buyables[12].effect);
+  if (getBuyableAmount("Groups", 13).gte(1))
+    pow = pow.mul(tmp["Groups"].buyables[13].effect);
+  if (getBuyableAmount("Groups", 14).gte(1))
+    pow = pow.mul(tmp["Groups"].buyables[14].effect);
+  if (getBuyableAmount("Groups", 15).gte(1))
+    pow = pow.mul(tmp["Groups"].buyables[15].effect);
+  if (getBuyableAmount("Groups", 16).gte(1))
+    pow = pow.mul(tmp["Groups"].buyables[16].effect);
+  if (getBuyableAmount("Groups", 17).gte(1))
+    pow = pow.mul(tmp["Groups"].buyables[17].effect);
+  if (getBuyableAmount("Groups", 18).gte(1))
+    pow = pow.mul(tmp["Groups"].buyables[18].effect);
+  if (getBuyableAmount("Groups", 19).gte(1))
+    pow = pow.mul(tmp["Groups"].buyables[19].effect);
+  if (getBuyableAmount("Groups", 20).gte(1))
+    pow = pow.mul(tmp["Groups"].buyables[20].effect);
+
+  return pow;
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
@@ -86,7 +97,7 @@ var displayThings = [];
 
 // Determines when the game "ends"
 function isEndgame() {
-  return player.points.gte(new Decimal("e280000000"));
+  return false;
 }
 
 // Less important things beyond this point!
