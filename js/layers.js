@@ -26,6 +26,9 @@ addLayer("Numbers", {
   gainExp() {
     return new Decimal(1);
   },
+  resetsNothing() {
+    return hasUpgrade(this.layer, 17);
+  },
   row: 0,
   hotkeys: [
     {
@@ -201,12 +204,34 @@ addLayer("Numbers", {
           " Bres"
         );
       },
-      cost: new Decimal(1000000),
+      cost: new Decimal(20000),
       currencyInternalName() {
         return "points";
       },
       unlocked() {
-        return hasUpgrade(this.layer, 15) || hasUpgrade(this.layer, 15);
+        return hasUpgrade(this.layer, 15);
+      },
+    },
+    17: {
+      title: "NO RESET BABY",
+      description: "{}s no longer reset Bres",
+      fullDisplay() {
+        return (
+          "<h3>" +
+          this.title +
+          "</h3><br>" +
+          this.description +
+          "<br><br>Cost:" +
+          format(this.cost) +
+          " Bres"
+        );
+      },
+      cost: new Decimal(1e9),
+      currencyInternalName() {
+        return "points";
+      },
+      unlocked() {
+        return hasUpgrade(this.layer, 16);
       },
     },
   },
@@ -214,7 +239,7 @@ addLayer("Numbers", {
     11: {
       title: "0",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       display() {
         return (
@@ -240,7 +265,7 @@ addLayer("Numbers", {
     12: {
       title: "1",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       display() {
         return (
@@ -289,7 +314,7 @@ addLayer("Numbers", {
     13: {
       title: "2",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       display() {
         return (
@@ -347,7 +372,7 @@ addLayer("Numbers", {
     14: {
       title: "3",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       display() {
         return (
@@ -402,7 +427,7 @@ addLayer("Numbers", {
     15: {
       title: "4",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       display() {
         return (
@@ -462,7 +487,7 @@ addLayer("Numbers", {
     16: {
       title: "5",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       display() {
         return (
@@ -527,7 +552,7 @@ addLayer("Numbers", {
     17: {
       title: "6",
       cost(x) {
-        return new Decimal(2).pow(x).mul(2).round();
+        return new Decimal(x).add(3).mul(x.pow(0.25).add(2).ln()).round();
       },
       display() {
         return (
@@ -636,7 +661,7 @@ addLayer("Groups", {
     11: {
       title: "{e}",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id);
@@ -671,7 +696,7 @@ addLayer("Groups", {
     12: {
       title: "Z2 = S2 = D2",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.05);
@@ -714,7 +739,7 @@ addLayer("Groups", {
     13: {
       title: "Z3 = A3",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.066);
@@ -758,7 +783,7 @@ addLayer("Groups", {
     14: {
       title: "Z4 = Dic1",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.075);
@@ -801,7 +826,7 @@ addLayer("Groups", {
     15: {
       title: "Z5",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.08);
@@ -845,7 +870,7 @@ addLayer("Groups", {
     16: {
       title: "Z6 = Z2 × Z3",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.083);
@@ -891,7 +916,7 @@ addLayer("Groups", {
     17: {
       title: "Z10 = Z2 × Z5",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.09);
@@ -937,7 +962,7 @@ addLayer("Groups", {
     18: {
       title: "Z12 = Z3 × Z4",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.092);
@@ -983,7 +1008,7 @@ addLayer("Groups", {
     19: {
       title: "Z15 = Z3 × Z5",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.093);
@@ -1029,7 +1054,7 @@ addLayer("Groups", {
     20: {
       title: "Z20 = Z4 × Z5",
       cost(x) {
-        return new Decimal(2).pow(x).round();
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).add(1).pow(0.095);
@@ -1075,7 +1100,7 @@ addLayer("Groups", {
     21: {
       title: "K4 = D4 = (Z2)<sup>2</sup>",
       cost(x) {
-        return new Decimal(2).pow(x).mul(2).round();
+        return new Decimal(x).add(3).mul(x.pow(0.25).add(2).ln()).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id);
