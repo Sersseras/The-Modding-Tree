@@ -60,6 +60,9 @@ function getPointGen() {
 
   gain = gain.add(add).mul(mul).pow(pow);
 
+  if (getBuyableAmount("Groups", 23).gte(1))
+    gain.tetrate(tmp["Groups"].buyables[23].effect);
+
   return gain;
 }
 
@@ -83,6 +86,8 @@ function cyclicEffect() {
     pow = pow.mul(tmp["Groups"].buyables[19].effect);
   if (getBuyableAmount("Groups", 20).gte(1))
     pow = pow.mul(tmp["Groups"].buyables[20].effect);
+  if (getBuyableAmount("Groups", 22).gte(1))
+    pow = pow.mul(tmp["Groups"].buyables[22].effect);
 
   return pow;
 }
