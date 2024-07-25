@@ -61,7 +61,7 @@ function getPointGen() {
   gain = gain.add(add).mul(mul).pow(pow);
 
   if (getBuyableAmount("Groups", 23).gte(1))
-    gain.tetrate(tmp["Groups"].buyables[23].effect);
+    gain = gain.tetrate(tmp["Groups"].buyables[23].effect);
 
   return gain;
 }

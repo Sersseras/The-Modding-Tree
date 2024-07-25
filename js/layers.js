@@ -17,10 +17,9 @@ addLayer("Numbers", {
   },
   type: "static",
   exponent() {
-    return 1;
-    //return getBuyableAmount("Groups", 23).gte(1)
-    //  ? tmp["Groups"].buyables[23].effect
-    //  : 1;
+    return getBuyableAmount("Groups", 23).gte(1)
+      ? tmp["Groups"].buyables[23].effect
+      : 1;
   },
   base: 10,
   gainMult() {
@@ -214,6 +213,7 @@ addLayer("Numbers", {
         return "points";
       },
       unlocked() {
+        return true;
         return hasUpgrade(this.layer, 15);
       },
     },
@@ -239,6 +239,25 @@ addLayer("Numbers", {
         return hasUpgrade(this.layer, 16);
       },
     },
+    18: {
+      title: "NO RESET BABY II",
+      description: "Numbers no longer cost anything",
+      fullDisplay() {
+        return (
+          "<h3>" +
+          this.title +
+          "</h3><br>" +
+          this.description +
+          "<br><br>Cost: " +
+          format(this.cost) +
+          " {}"
+        );
+      },
+      cost: new Decimal(30),
+      unlocked() {
+        return hasUpgrade(this.layer, 17);
+      },
+    },
   },
   buyables: {
     11: {
@@ -259,12 +278,13 @@ addLayer("Numbers", {
         return player[this.layer].points.gte(this.cost());
       },
       buy() {
-        player[this.layer].points = player[this.layer].points.sub(this.cost());
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
+        if (hasUpgrade(this.layer, 18)) return;
+        player[this.layer].points = player[this.layer].points.sub(this.cost());
       },
     },
     12: {
@@ -289,6 +309,12 @@ addLayer("Numbers", {
         );
       },
       buy() {
+        setBuyableAmount(
+          this.layer,
+          this.id,
+          getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 18)) return;
         if (!hasUpgrade(this.layer, 14))
           player[this.layer].points = player[this.layer].points.sub(
             this.cost()
@@ -297,11 +323,6 @@ addLayer("Numbers", {
           this.layer,
           11,
           getBuyableAmount(this.layer, 11).sub(this.cost())
-        );
-        setBuyableAmount(
-          this.layer,
-          this.id,
-          getBuyableAmount(this.layer, this.id).add(1)
         );
       },
       unlocked() {
@@ -342,6 +363,12 @@ addLayer("Numbers", {
         );
       },
       buy() {
+        setBuyableAmount(
+          this.layer,
+          this.id,
+          getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 18)) return;
         if (!hasUpgrade(this.layer, 14))
           player[this.layer].points = player[this.layer].points.sub(
             this.cost()
@@ -356,11 +383,6 @@ addLayer("Numbers", {
           this.layer,
           12,
           getBuyableAmount(this.layer, 12).sub(this.cost())
-        );
-        setBuyableAmount(
-          this.layer,
-          this.id,
-          getBuyableAmount(this.layer, this.id).add(1)
         );
       },
       unlocked() {
@@ -397,6 +419,12 @@ addLayer("Numbers", {
         );
       },
       buy() {
+        setBuyableAmount(
+          this.layer,
+          this.id,
+          getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 18)) return;
         player[this.layer].points = player[this.layer].points.sub(this.cost());
         setBuyableAmount(
           this.layer,
@@ -412,11 +440,6 @@ addLayer("Numbers", {
           this.layer,
           13,
           getBuyableAmount(this.layer, 13).sub(this.cost())
-        );
-        setBuyableAmount(
-          this.layer,
-          this.id,
-          getBuyableAmount(this.layer, this.id).add(1)
         );
       },
       unlocked() {
@@ -453,6 +476,12 @@ addLayer("Numbers", {
         );
       },
       buy() {
+        setBuyableAmount(
+          this.layer,
+          this.id,
+          getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 18)) return;
         player[this.layer].points = player[this.layer].points.sub(this.cost());
         setBuyableAmount(
           this.layer,
@@ -473,11 +502,6 @@ addLayer("Numbers", {
           this.layer,
           14,
           getBuyableAmount(this.layer, 14).sub(this.cost())
-        );
-        setBuyableAmount(
-          this.layer,
-          this.id,
-          getBuyableAmount(this.layer, this.id).add(1)
         );
       },
       unlocked() {
@@ -514,6 +538,12 @@ addLayer("Numbers", {
         );
       },
       buy() {
+        setBuyableAmount(
+          this.layer,
+          this.id,
+          getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 18)) return;
         player[this.layer].points = player[this.layer].points.sub(this.cost());
         setBuyableAmount(
           this.layer,
@@ -574,13 +604,14 @@ addLayer("Numbers", {
       buy() {
         setBuyableAmount(
           this.layer,
-          16,
-          getBuyableAmount(this.layer, 16).sub(this.cost())
-        );
-        setBuyableAmount(
-          this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 18)) return;
+        setBuyableAmount(
+          this.layer,
+          16,
+          getBuyableAmount(this.layer, 16).sub(this.cost())
         );
       },
       unlocked() {
@@ -607,13 +638,14 @@ addLayer("Numbers", {
       buy() {
         setBuyableAmount(
           this.layer,
-          17,
-          getBuyableAmount(this.layer, 17).sub(this.cost())
-        );
-        setBuyableAmount(
-          this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 18)) return;
+        setBuyableAmount(
+          this.layer,
+          17,
+          getBuyableAmount(this.layer, 17).sub(this.cost())
         );
       },
       unlocked() {
@@ -640,13 +672,14 @@ addLayer("Numbers", {
       buy() {
         setBuyableAmount(
           this.layer,
-          18,
-          getBuyableAmount(this.layer, 18).sub(this.cost())
-        );
-        setBuyableAmount(
-          this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 18)) return;
+        setBuyableAmount(
+          this.layer,
+          18,
+          getBuyableAmount(this.layer, 18).sub(this.cost())
         );
       },
       unlocked() {
@@ -654,11 +687,35 @@ addLayer("Numbers", {
       },
     },
   },
+  clickables: {
+    11: {
+      title() {
+        return "Toggle Autobuyer";
+      },
+      display() {
+        return getClickableState(this.layer, this.id);
+      },
+      canClick: true,
+      onClick() {
+        setClickableState(
+          this.layer,
+          this.id,
+          getClickableState(this.layer, this.id) == "On" ? "Off" : "On"
+        );
+      },
+      unlocked() {
+        return hasUpgrade(this.layer, 16);
+      },
+    },
+  },
   layerShown() {
     return true;
   },
   automate() {
-    if (hasUpgrade(this.layer, 16))
+    if (
+      hasUpgrade(this.layer, 16) &&
+      !(getClickableState(this.layer, 11) == "Off")
+    )
       for (let i = 11; i <= 16; i++) buyBuyable(this.layer, i);
   },
 });
@@ -725,6 +782,31 @@ addLayer("Groups", {
       },
       unlocked() {
         return hasUpgrade(this.layer, 11);
+      },
+    },
+    13: {
+      title: "Cyclic Group Autobuyer",
+      description: "The Cyclic Group Autobuyer autobuys cyclic groups",
+      fullDisplay() {
+        return (
+          "<h3>" +
+          this.title +
+          "</h3><br>" +
+          this.description +
+          "<br><br>Cost: " +
+          this.cost +
+          " <b>{}</b>"
+        );
+      },
+      cost: new Decimal(250),
+      currencyInternalName() {
+        return "points";
+      },
+      currencyLayer() {
+        return "Numbers";
+      },
+      unlocked() {
+        return hasUpgrade(this.layer, 12);
       },
     },
   },
@@ -1171,7 +1253,7 @@ addLayer("Groups", {
     21: {
       title: "K<sub>4</sub> = D<sub>4</sub> = Z<sub>2</sub><sup>2</sup>",
       cost(x) {
-        return new Decimal(x).add(2).mul(x.pow(0.22).add(2).ln()).round();
+        return new Decimal(x).add(2).mul(x.add(2).ln()).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id);
@@ -1251,7 +1333,9 @@ addLayer("Groups", {
       },
       effect() {
         return getBuyableAmount(this.layer, this.id).gte(1)
-          ? Decimal(0.9).div(getBuyableAmount(this.layer, this.id).pow(0.25))
+          ? new Decimal(0.9).div(
+              getBuyableAmount(this.layer, this.id).pow(0.25)
+            )
           : 1;
       },
       display() {
@@ -1293,6 +1377,7 @@ addLayer("Groups", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
+        player.points = new Decimal(0);
       },
       unlocked() {
         return hasUpgrade(this.layer, 12);
@@ -1345,6 +1430,12 @@ addLayer("Groups", {
     "Symmetric Groups": {
       content: [["row", [["buyable", 23]]]],
     },
+  },
+  automate() {
+    if (hasUpgrade(this.layer, 13)) {
+      for (let i = 12; i <= 20; i++) buyBuyable(this.layer, i);
+      buyBuyable(this.layer, 22);
+    }
   },
 });
 
