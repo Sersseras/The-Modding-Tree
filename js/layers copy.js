@@ -17,7 +17,7 @@ addLayer("Numbers", {
   },
   type: "static",
   exponent() {
-    return getBuyableAmount("Groups", 22).gte(1)
+    return getBuyableAmount("Groups", 2).gte(1)
       ? tmp["Groups"].buyables[22].effect
       : 1;
   },
@@ -112,10 +112,7 @@ addLayer("Numbers", {
       title: "Frieseckes Blessing",
       description: "Point gain is boosted, based on itself",
       effect() {
-        return player.points
-          .add(3)
-          .ln()
-          .pow(hasUpgrade(this.layer, 19) ? 2 : 1);
+        return player.points.add(2).ln();
       },
       fullDisplay() {
         return (
@@ -233,7 +230,7 @@ addLayer("Numbers", {
           " Bres"
         );
       },
-      cost: new Decimal(1e6),
+      cost: new Decimal(1e9),
       currencyInternalName() {
         return "points";
       },
@@ -255,31 +252,9 @@ addLayer("Numbers", {
           " {}"
         );
       },
-      cost: new Decimal(10),
+      cost: new Decimal(30),
       unlocked() {
         return hasUpgrade(this.layer, 17);
-      },
-    },
-    19: {
-      title: "Frieseckes Blessing<sup>2</sup>",
-      description: "Squares Frieseckes Blessing",
-      fullDisplay() {
-        return (
-          "<h3>" +
-          this.title +
-          "</h3><br>" +
-          this.description +
-          "<br><br>Cost: " +
-          format(this.cost) +
-          " Bres"
-        );
-      },
-      cost: new Decimal(1e8),
-      currencyInternalName() {
-        return "points";
-      },
-      unlocked() {
-        return hasUpgrade(this.layer, 18);
       },
     },
   },
@@ -321,8 +296,7 @@ addLayer("Numbers", {
         return (
           "You have " +
           getBuyableAmount(this.layer, this.id) +
-          (hasUpgrade(this.layer, 14) ? " 𝔓(<b>0</b>)" : " {∅}") +
-          "\nCost: " +
+          " {∅}\nCost: " +
           this.cost() +
           (hasUpgrade(this.layer, 14) ? " <b>0</b>" : " <b>0</b> and {}")
         );
@@ -372,8 +346,7 @@ addLayer("Numbers", {
         return (
           "You have " +
           getBuyableAmount(this.layer, this.id) +
-          (hasUpgrade(this.layer, 14) ? " 𝔓(<b>1</b>)" : " {∅, {∅}}") +
-          "\nCost: " +
+          " {∅, {∅}}\nCost: " +
           this.cost() +
           (hasUpgrade(this.layer, 14)
             ? " <b>1</b>"
@@ -599,6 +572,11 @@ addLayer("Numbers", {
           this.layer,
           15,
           getBuyableAmount(this.layer, 15).sub(previousCost)
+        );
+        setBuyableAmount(
+          this.layer,
+          this.id,
+          getBuyableAmount(this.layer, this.id).add(1)
         );
       },
       unlocked() {
@@ -1124,7 +1102,7 @@ addLayer("Groups", {
           " <b>{}</b>"
         );
       },
-      cost: new Decimal(40),
+      cost: new Decimal(250),
       currencyInternalName() {
         return "points";
       },
