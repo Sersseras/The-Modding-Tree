@@ -17,14 +17,14 @@ addLayer("Numbers", {
   },
   type: "static",
   exponent() {
-    return new Decimal(1)
+    return new Decimal(1.001)
       .pow(player[this.layer].points)
       .mul(tmp["Groups"].buyables[22].effect);
   },
   base: 10,
   gainMult() {
     mult = new Decimal(1);
-
+    mult = mult.div(tmp[this.layer].upgrades[22].effect);
     return mult;
   },
   gainExp() {
@@ -289,7 +289,7 @@ addLayer("Numbers", {
         return player[this.layer].points
           .add(3)
           .ln()
-          .pow(2)
+          .pow(5)
           .pow(tmp["Groups"].buyables[32].effect);
       },
       fullDisplay() {
@@ -310,7 +310,34 @@ addLayer("Numbers", {
         return "points";
       },
       unlocked() {
-        return hasUpgrade(this.layer, 17);
+        return hasUpgrade(this.layer, 19);
+      },
+    },
+    22: {
+      title: "Kreiners Blessing",
+      description: "{} is less expensive, based on Bres",
+      effect() {
+        return player.points.add(3).ln().pow(10);
+      },
+      fullDisplay() {
+        return (
+          "<h3>" +
+          this.title +
+          "</h3><br>" +
+          this.description +
+          "<br>Currently: x" +
+          format(this.effect()) +
+          "<br><br>Cost: " +
+          format(this.cost) +
+          " Bres"
+        );
+      },
+      cost: new Decimal(1e31),
+      currencyInternalName() {
+        return "points";
+      },
+      unlocked() {
+        return hasUpgrade(this.layer, 21);
       },
     },
   },
@@ -1206,7 +1233,7 @@ addLayer("Groups", {
           " <b>{e}</b>"
         );
       },
-      cost: new Decimal(21),
+      cost: new Decimal(20),
       currencyInternalName() {
         return "11";
       },
@@ -1729,7 +1756,7 @@ addLayer("Groups", {
       effect() {
         return getBuyableAmount(this.layer, this.id).gte(1)
           ? new Decimal(0.9).div(
-              getBuyableAmount(this.layer, this.id).add(1).ln().pow(0.15)
+              getBuyableAmount(this.layer, this.id).add(1).ln().pow(0.25)
             )
           : 1;
       },
@@ -2127,7 +2154,7 @@ addLayer("Groups", {
           .add(16)
           .ln()
           .ln()
-          .pow(getBuyableAmount(this.layer, this.id).mul(0.1));
+          .pow(getBuyableAmount(this.layer, this.id).mul(0.2));
       },
       display() {
         return (
@@ -2322,7 +2349,7 @@ addLayer("Rings", {
     11: {
       title: "{0}",
       cost(x) {
-        return new Decimal(1.6).pow(x);
+        return new Decimal(1.6).pow(x).round();
       },
       effect() {
         return getBuyableAmount(this.layer, this.id);
