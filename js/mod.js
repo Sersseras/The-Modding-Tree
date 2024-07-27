@@ -72,7 +72,7 @@ function cyclicEffect() {
     if (getBuyableAmount("Groups", i).gte(1))
       pow = pow.mul(tmp["Groups"].buyables[i].effect);
   }
-  for (let i = 23; i <= 27; i++) {
+  for (let i = 23; i <= 29; i++) {
     if (getBuyableAmount("Groups", i).gte(1))
       pow = pow.mul(tmp["Groups"].buyables[i].effect);
   }
