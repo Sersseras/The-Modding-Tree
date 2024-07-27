@@ -17,7 +17,7 @@ addLayer("Numbers", {
   },
   type: "static",
   exponent() {
-    return new Decimal(1.001)
+    return new Decimal(1)
       .pow(player[this.layer].points)
       .mul(tmp["Groups"].buyables[22].effect);
   },
