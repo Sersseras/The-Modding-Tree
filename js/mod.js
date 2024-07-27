@@ -54,6 +54,8 @@ function getPointGen() {
     mul = mul.mul(tmp["Numbers"].upgrades[12].effect);
   if (hasUpgrade("Numbers", 13))
     mul = mul.mul(tmp["Numbers"].upgrades[13].effect);
+  if (hasUpgrade("Numbers", 21))
+    mul = mul.mul(tmp["Numbers"].upgrades[21].effect);
 
   let pow = new Decimal(1);
   pow = pow.mul(cyclicEffect());

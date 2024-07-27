@@ -12,6 +12,9 @@ addLayer("Numbers", {
   requires: new Decimal(10),
   resource: "{}",
   baseResource: "Bres",
+  canBuyMax() {
+    return true;
+  },
   baseAmount() {
     return player.points;
   },
@@ -273,13 +276,44 @@ addLayer("Numbers", {
           "</h3><br>" +
           this.description +
           "<br><br>Cost: " +
-          format(this.cost) +
+          this.cost +
           " {}"
         );
       },
       cost: new Decimal(12),
       unlocked() {
         return hasUpgrade(this.layer, 18);
+      },
+    },
+    21: {
+      title: "Warzels Blessing",
+      description: "Bre gain is boosted, based on {}",
+      effect() {
+        return player[this.layer].points
+          .add(3)
+          .ln()
+          .pow(2)
+          .pow(tmp["Groups"].buyables[32].effect);
+      },
+      fullDisplay() {
+        return (
+          "<h3>" +
+          this.title +
+          "</h3><br>" +
+          this.description +
+          "<br>Currently: x" +
+          format(this.effect()) +
+          "<br><br>Cost: " +
+          format(this.cost) +
+          " <b>{}</b>"
+        );
+      },
+      cost: new Decimal(1e15),
+      currencyInternalName() {
+        return "points";
+      },
+      unlocked() {
+        return hasUpgrade(this.layer, 17);
       },
     },
   },
@@ -1050,6 +1084,7 @@ addLayer("Groups", {
   symbol: "G",
   position: 0,
   row: 1,
+  branches: ["Rings"],
   startData() {
     return {
       unlocked: true,
@@ -1149,7 +1184,7 @@ addLayer("Groups", {
           " <b>{}</b>"
         );
       },
-      cost: new Decimal(75),
+      cost: new Decimal(50),
       currencyInternalName() {
         return "points";
       },
@@ -1158,6 +1193,31 @@ addLayer("Groups", {
       },
       unlocked() {
         return hasUpgrade(this.layer, 13);
+      },
+    },
+    15: {
+      title: "Binary Operations II",
+      description: "Trivial and cyclic groups no longer cost anything",
+      fullDisplay() {
+        return (
+          "<h3>" +
+          this.title +
+          "</h3><br>" +
+          this.description +
+          "<br><br>Cost: " +
+          this.cost +
+          " <b>{e}</b>"
+        );
+      },
+      cost: new Decimal(21),
+      currencyInternalName() {
+        return "11";
+      },
+      currencyLocation() {
+        return player[this.layer].buyables;
+      },
+      unlocked() {
+        return hasUpgrade(this.layer, 14);
       },
     },
   },
@@ -1672,7 +1732,7 @@ addLayer("Groups", {
       effect() {
         return getBuyableAmount(this.layer, this.id).gte(1)
           ? new Decimal(0.9).div(
-              getBuyableAmount(this.layer, this.id).pow(0.15)
+              getBuyableAmount(this.layer, this.id).add(1).ln().pow(0.15)
             )
           : 1;
       },
@@ -2025,6 +2085,7 @@ addLayer("Groups", {
       effect() {
         return new Decimal(1).div(
           player["Numbers"].points
+            .add(3)
             .ln()
             .pow(getBuyableAmount(this.layer, this.id))
         );
@@ -2052,7 +2113,7 @@ addLayer("Groups", {
         setBuyableAmount(
           "Numbers",
           19,
-          getBuyableAmount("Numbers".layer, 12).sub(previousCost)
+          getBuyableAmount("Numbers".layer, 19).sub(previousCost)
         );
       },
       unlocked() {
@@ -2098,7 +2159,7 @@ addLayer("Groups", {
         setBuyableAmount(
           "Numbers",
           19,
-          getBuyableAmount("Numbers".layer, 12).sub(previousCost)
+          getBuyableAmount("Numbers".layer, 19).sub(previousCost)
         );
         setBuyableAmount(
           this.layer,
@@ -2113,6 +2174,62 @@ addLayer("Groups", {
       },
       unlocked() {
         return getBuyableAmount(this.layer, 21).gte(3);
+      },
+    },
+    32: {
+      title: "Q<sub>24</sub> = Dic<sub>6</sub> = Z<sub>3</sub> ⋊ Q<sub>8</sub>",
+      cost(x) {
+        return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
+      },
+      effect() {
+        return getBuyableAmount("Groups", 11)
+          .add(16)
+          .ln()
+          .ln()
+          .pow(getBuyableAmount(this.layer, this.id));
+      },
+      display() {
+        return (
+          "You have " +
+          getBuyableAmount(this.layer, this.id) +
+          " Dicyclic Groups of Order 24\nCost: " +
+          this.cost() +
+          " <b>Z<sub>3</sub></b>, <b>Z<sub>4</sub></b> and <b>10</b><br><br>Boosts Warzels Blessing effect based on Trivial Groups, Currently: ^" +
+          format(this.effect())
+        );
+      },
+      canAfford() {
+        return (
+          getBuyableAmount("Numbers", 22).gte(this.cost()) &&
+          getBuyableAmount(this.layer, 13).gte(this.cost()) &&
+          getBuyableAmount(this.layer, 14).gte(this.cost())
+        );
+      },
+      buy() {
+        let previousCost = this.cost();
+        setBuyableAmount(
+          this.layer,
+          this.id,
+          getBuyableAmount(this.layer, this.id).add(1)
+        );
+        setBuyableAmount(
+          "Numbers",
+          22,
+          getBuyableAmount("Numbers".layer, 22).sub(previousCost)
+        );
+        setBuyableAmount(
+          this.layer,
+          13,
+          getBuyableAmount("Numbers".layer, 13).sub(previousCost)
+        );
+        setBuyableAmount(
+          this.layer,
+          14,
+          getBuyableAmount("Numbers".layer, 14).sub(previousCost)
+        );
+      },
+      unlocked() {
+        return getBuyableAmount(this.layer, 21).gte(5);
       },
     },
   },
@@ -2190,6 +2307,62 @@ addLayer("Groups", {
       for (let i = 23; i <= 29; i++) buyBuyable(this.layer, i);
     }
   },
+});
+
+addLayer("Rings", {
+  symbol: "R",
+  position: 0,
+  row: 2,
+  startData() {
+    return {
+      unlocked: true,
+    };
+  },
+  color: "#FF0000",
+  type: "none",
+  upgrades: {},
+  buyables: {
+    11: {
+      title: "{0}",
+      cost(x) {
+        return new Decimal(1.6).pow(x);
+      },
+      effect() {
+        return getBuyableAmount(this.layer, this.id);
+      },
+      display() {
+        return (
+          "You have " +
+          getBuyableAmount(this.layer, this.id) +
+          " Zero Rings\nCost: " +
+          this.cost() +
+          " <b>{e}</b><br><br>Currently: +" +
+          format(this.effect()) +
+          " base Bre gain"
+        );
+      },
+      canAfford() {
+        return getBuyableAmount("Groups", 11).gte(this.cost());
+      },
+      buy() {
+        let previousCost = this.cost();
+        setBuyableAmount(
+          this.layer,
+          this.id,
+          getBuyableAmount(this.layer, this.id).add(1)
+        );
+        setBuyableAmount(
+          "Groups",
+          11,
+          getBuyableAmount("Groups", 11).sub(previousCost)
+        );
+      },
+    },
+  },
+  layerShown() {
+    return hasUpgrade("Groups", 15);
+  },
+  automate() {},
 });
 
 addLayer("achievements", {
