@@ -1135,6 +1135,31 @@ addLayer("Groups", {
         return hasUpgrade(this.layer, 12);
       },
     },
+    14: {
+      title: "NO RESET BABY III",
+      description: "Trivial and cyclic groups no longer cost anything",
+      fullDisplay() {
+        return (
+          "<h3>" +
+          this.title +
+          "</h3><br>" +
+          this.description +
+          "<br><br>Cost: " +
+          this.cost +
+          " <b>{}</b>"
+        );
+      },
+      cost: new Decimal(300),
+      currencyInternalName() {
+        return "points";
+      },
+      currencyLayer() {
+        return "Numbers";
+      },
+      unlocked() {
+        return hasUpgrade(this.layer, 12);
+      },
+    },
   },
   buyables: {
     11: {
@@ -1160,15 +1185,17 @@ addLayer("Groups", {
         return getBuyableAmount("Numbers", 12).gte(this.cost());
       },
       buy() {
-        setBuyableAmount(
-          "Numbers",
-          12,
-          getBuyableAmount("Numbers", 12).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          "Numbers",
+          12,
+          getBuyableAmount("Numbers", 12).sub(previousCost)
         );
       },
     },
@@ -1195,15 +1222,17 @@ addLayer("Groups", {
         return getBuyableAmount("Numbers", 13).gte(this.cost());
       },
       buy() {
-        setBuyableAmount(
-          "Numbers",
-          13,
-          getBuyableAmount("Numbers", 13).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          "Numbers",
+          13,
+          getBuyableAmount("Numbers", 13).sub(previousCost)
         );
       },
       unlocked() {
@@ -1238,15 +1267,17 @@ addLayer("Groups", {
         return getBuyableAmount("Numbers", 14).gte(this.cost());
       },
       buy() {
-        setBuyableAmount(
-          "Numbers",
-          14,
-          getBuyableAmount("Numbers", 14).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          "Numbers",
+          14,
+          getBuyableAmount("Numbers", 14).sub(previousCost)
         );
       },
       unlocked() {
@@ -1282,15 +1313,17 @@ addLayer("Groups", {
         return getBuyableAmount("Numbers", 15).gte(this.cost());
       },
       buy() {
-        setBuyableAmount(
-          "Numbers",
-          15,
-          getBuyableAmount("Numbers", 15).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          "Numbers",
+          15,
+          getBuyableAmount("Numbers", 15).sub(previousCost)
         );
       },
       unlocked() {
@@ -1325,15 +1358,17 @@ addLayer("Groups", {
         return getBuyableAmount("Numbers", 16).gte(this.cost());
       },
       buy() {
-        setBuyableAmount(
-          "Numbers",
-          16,
-          getBuyableAmount("Numbers", 16).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          "Numbers",
+          16,
+          getBuyableAmount("Numbers", 16).sub(previousCost)
         );
       },
       unlocked() {
@@ -1372,20 +1407,22 @@ addLayer("Groups", {
         );
       },
       buy() {
-        setBuyableAmount(
-          this.layer,
-          12,
-          getBuyableAmount(this.layer, 12).sub(this.cost())
-        );
-        setBuyableAmount(
-          this.layer,
-          13,
-          getBuyableAmount(this.layer, 13).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          this.layer,
+          12,
+          getBuyableAmount(this.layer, 12).sub(previousCost)
+        );
+        setBuyableAmount(
+          this.layer,
+          13,
+          getBuyableAmount(this.layer, 13).sub(previousCost)
         );
       },
       unlocked() {
@@ -1418,20 +1455,22 @@ addLayer("Groups", {
         );
       },
       buy() {
-        setBuyableAmount(
-          this.layer,
-          12,
-          getBuyableAmount(this.layer, 12).sub(this.cost())
-        );
-        setBuyableAmount(
-          this.layer,
-          15,
-          getBuyableAmount(this.layer, 15).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          this.layer,
+          12,
+          getBuyableAmount(this.layer, 12).sub(previousCost)
+        );
+        setBuyableAmount(
+          this.layer,
+          15,
+          getBuyableAmount(this.layer, 15).sub(previousCost)
         );
       },
       unlocked() {
@@ -1464,20 +1503,22 @@ addLayer("Groups", {
         );
       },
       buy() {
-        setBuyableAmount(
-          this.layer,
-          13,
-          getBuyableAmount(this.layer, 13).sub(this.cost())
-        );
-        setBuyableAmount(
-          this.layer,
-          14,
-          getBuyableAmount(this.layer, 14).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          this.layer,
+          13,
+          getBuyableAmount(this.layer, 13).sub(previousCost)
+        );
+        setBuyableAmount(
+          this.layer,
+          14,
+          getBuyableAmount(this.layer, 14).sub(previousCost)
         );
       },
       unlocked() {
@@ -1510,20 +1551,22 @@ addLayer("Groups", {
         );
       },
       buy() {
-        setBuyableAmount(
-          this.layer,
-          13,
-          getBuyableAmount(this.layer, 13).sub(this.cost())
-        );
-        setBuyableAmount(
-          this.layer,
-          15,
-          getBuyableAmount(this.layer, 15).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          this.layer,
+          13,
+          getBuyableAmount(this.layer, 13).sub(previousCost)
+        );
+        setBuyableAmount(
+          this.layer,
+          15,
+          getBuyableAmount(this.layer, 15).sub(previousCost)
         );
       },
       unlocked() {
@@ -1556,20 +1599,22 @@ addLayer("Groups", {
         );
       },
       buy() {
-        setBuyableAmount(
-          this.layer,
-          14,
-          getBuyableAmount(this.layer, 14).sub(this.cost())
-        );
-        setBuyableAmount(
-          this.layer,
-          15,
-          getBuyableAmount(this.layer, 15).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          this.layer,
+          14,
+          getBuyableAmount(this.layer, 14).sub(previousCost)
+        );
+        setBuyableAmount(
+          this.layer,
+          15,
+          getBuyableAmount(this.layer, 15).sub(previousCost)
         );
       },
       unlocked() {
@@ -1694,15 +1739,17 @@ addLayer("Groups", {
         return getBuyableAmount("Numbers", 18).gte(this.cost());
       },
       buy() {
-        setBuyableAmount(
-          "Numbers",
-          18,
-          getBuyableAmount("Numbers", 18).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          "Numbers",
+          18,
+          getBuyableAmount("Numbers", 18).sub(previousCost)
         );
       },
       unlocked() {
@@ -1732,15 +1779,17 @@ addLayer("Groups", {
         return getBuyableAmount("Numbers", 19).gte(this.cost());
       },
       buy() {
-        setBuyableAmount(
-          "Numbers",
-          19,
-          getBuyableAmount("Numbers", 19).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          "Numbers",
+          19,
+          getBuyableAmount("Numbers", 19).sub(previousCost)
         );
       },
       unlocked() {
@@ -1770,15 +1819,17 @@ addLayer("Groups", {
         return getBuyableAmount("Numbers", 21).gte(this.cost());
       },
       buy() {
-        setBuyableAmount(
-          "Numbers",
-          21,
-          getBuyableAmount("Numbers", 21).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          "Numbers",
+          21,
+          getBuyableAmount("Numbers", 21).sub(previousCost)
         );
       },
       unlocked() {
@@ -1808,15 +1859,17 @@ addLayer("Groups", {
         return getBuyableAmount("Numbers", 23).gte(this.cost());
       },
       buy() {
-        setBuyableAmount(
-          "Numbers",
-          23,
-          getBuyableAmount("Numbers", 23).sub(this.cost())
-        );
+        let previousCost = this.cost();
         setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          "Numbers",
+          23,
+          getBuyableAmount("Numbers", 23).sub(previousCost)
         );
       },
       unlocked() {
@@ -1847,14 +1900,16 @@ addLayer("Groups", {
       },
       buy() {
         setBuyableAmount(
-          "Numbers",
-          25,
-          getBuyableAmount("Numbers", 25).sub(this.cost())
-        );
-        setBuyableAmount(
           this.layer,
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
+        );
+        let previousCost = this.cost();
+        if (hasUpgrade(this.layer, 14)) return;
+        setBuyableAmount(
+          "Numbers",
+          25,
+          getBuyableAmount("Numbers", 25).sub(previousCost)
         );
       },
       unlocked() {
