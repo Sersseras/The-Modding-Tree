@@ -12,17 +12,14 @@ addLayer("Numbers", {
   requires: new Decimal(10),
   resource: "{}",
   baseResource: "Bres",
-  canBuyMax() {
-    return true;
-  },
   baseAmount() {
     return player.points;
   },
   type: "static",
   exponent() {
-    return getBuyableAmount("Groups", 22).gte(1)
-      ? tmp["Groups"].buyables[22].effect
-      : 1;
+    return new Decimal(1.001)
+      .pow(player[this.layer].points)
+      .mul(tmp["Groups"].buyables[22].effect);
   },
   base: 10,
   gainMult() {
@@ -2186,7 +2183,7 @@ addLayer("Groups", {
           .add(16)
           .ln()
           .ln()
-          .pow(getBuyableAmount(this.layer, this.id));
+          .pow(getBuyableAmount(this.layer, this.id).add(2).ln());
       },
       display() {
         return (
