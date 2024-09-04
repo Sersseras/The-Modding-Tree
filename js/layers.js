@@ -24,7 +24,8 @@ addLayer("Numbers", {
   base: 10,
   gainMult() {
     mult = new Decimal(1);
-    mult = mult.div(tmp[this.layer].upgrades[22].effect);
+    if (hasUpgrade(this.layer, 22))
+      mult = mult.div(tmp[this.layer].upgrades[22].effect);
     return mult;
   },
   gainExp() {
@@ -302,7 +303,7 @@ addLayer("Numbers", {
           format(this.effect()) +
           "<br><br>Cost: " +
           format(this.cost) +
-          " <b>{}</b>"
+          " <b>Bres</b>"
         );
       },
       cost: new Decimal(1e15),
@@ -332,7 +333,7 @@ addLayer("Numbers", {
           " Bres"
         );
       },
-      cost: new Decimal(1e31),
+      cost: new Decimal(2e73),
       currencyInternalName() {
         return "points";
       },
@@ -399,7 +400,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         if (!hasUpgrade(this.layer, 14))
           player[this.layer].points =
             player[this.layer].points.sub(previousCost);
@@ -454,7 +455,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         if (!hasUpgrade(this.layer, 14)) {
           player[this.layer].points =
             player[this.layer].points.sub(previousCost);
@@ -510,7 +511,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         player[this.layer].points = player[this.layer].points.sub(previousCost);
         setBuyableAmount(
           this.layer,
@@ -568,7 +569,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         player[this.layer].points = player[this.layer].points.sub(previousCost);
         setBuyableAmount(
           this.layer,
@@ -631,7 +632,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         player[this.layer].points = player[this.layer].points.sub(previousCost);
         setBuyableAmount(
           this.layer,
@@ -691,7 +692,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         setBuyableAmount(
           this.layer,
           16,
@@ -726,7 +727,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         setBuyableAmount(
           this.layer,
           17,
@@ -761,7 +762,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         setBuyableAmount(
           this.layer,
           18,
@@ -796,7 +797,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         setBuyableAmount(
           this.layer,
           19,
@@ -831,7 +832,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         setBuyableAmount(
           this.layer,
           21,
@@ -866,7 +867,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         setBuyableAmount(
           this.layer,
           22,
@@ -901,7 +902,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         setBuyableAmount(
           this.layer,
           23,
@@ -936,7 +937,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         setBuyableAmount(
           this.layer,
           24,
@@ -971,7 +972,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         setBuyableAmount(
           this.layer,
           25,
@@ -1006,7 +1007,7 @@ addLayer("Numbers", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        if (hasUpgrade(this.layer, 18)) return;
+        if (hasUpgrade(this.layer, 19)) return;
         setBuyableAmount(
           this.layer,
           26,
@@ -1756,8 +1757,8 @@ addLayer("Groups", {
       effect() {
         return getBuyableAmount(this.layer, this.id).gte(1)
           ? new Decimal(0.9).div(
-              getBuyableAmount(this.layer, this.id).add(1).ln().pow(0.25)
-            )
+            getBuyableAmount(this.layer, this.id).add(1).ln().pow(0.25)
+          )
           : 1;
       },
       display() {
@@ -2386,7 +2387,7 @@ addLayer("Rings", {
   layerShown() {
     return hasUpgrade("Groups", 15);
   },
-  automate() {},
+  automate() { },
 });
 
 addLayer("achievements", {
