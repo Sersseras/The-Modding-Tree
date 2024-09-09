@@ -2344,7 +2344,6 @@ addLayer("Rings", {
     };
   },
   color: "#FF0000",
-  type: "none",
   upgrades: {},
   buyables: {
     11: {
