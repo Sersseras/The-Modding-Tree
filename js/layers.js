@@ -1256,7 +1256,7 @@ addLayer("Groups", {
           .round();
       },
       effect() {
-        return getBuyableAmount(this.layer, this.id).pow(
+        return getBuyableAmount(this.layer, this.id).mul(tmp["Rings"].buyables[11].effect.add(1)).pow(
           tmp[this.layer].buyables[31].effect
         );
       },
@@ -2341,9 +2341,24 @@ addLayer("Rings", {
   startData() {
     return {
       unlocked: true,
+      points: new Decimal(0),
     };
   },
   color: "#FF0000",
+  requires: new Decimal(1e108),
+  resource: "·",
+  baseResource: "Bres",
+  type: "normal",
+  exponent: 0.1,
+  gainMult() {
+    return new Decimal(1);
+  },
+  gainExp() {
+    return new Decimal(1);
+  },
+  baseAmount() {
+    return player.points;
+  },
   upgrades: {},
   buyables: {
     11: {
@@ -2352,7 +2367,7 @@ addLayer("Rings", {
         return new Decimal(1.6).pow(x).round();
       },
       effect() {
-        return getBuyableAmount(this.layer, this.id);
+        return getBuyableAmount(this.layer, this.id).mul(0.5);
       },
       display() {
         return (
@@ -2360,13 +2375,13 @@ addLayer("Rings", {
           getBuyableAmount(this.layer, this.id) +
           " Zero Rings\nCost: " +
           this.cost() +
-          " <b>{e}</b><br><br>Currently: +" +
+          " <b>{e}</b> and <b>·</b><br><br>Currently: +" +
           format(this.effect()) +
-          " base Bre gain"
+          " to <b>{e}</b> base"
         );
       },
       canAfford() {
-        return getBuyableAmount("Groups", 11).gte(this.cost());
+        return getBuyableAmount("Groups", 11).gte(this.cost()) && player[this.layer].points.gte(this.cost());
       },
       buy() {
         let previousCost = this.cost();
@@ -2380,11 +2395,12 @@ addLayer("Rings", {
           11,
           getBuyableAmount("Groups", 11).sub(previousCost)
         );
+        player[this.layer].points = player[this.layer].points.sub(previousCost);
       },
     },
   },
   layerShown() {
-    return hasUpgrade("Groups", 15);
+    return hasUpgrade("Groups", 15) || player[this.layer].points.gte(1) || getBuyableAmount(this.layer, 11).gte(1);
   },
   automate() { },
 });
