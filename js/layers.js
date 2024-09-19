@@ -1125,7 +1125,6 @@ addLayer("Numbers", {
   },
   doReset(resettingLayer) {
     layerDataReset(this.layer, (hasMilestone("Rings", 2)) ? ["upgrades"] : [])
-    //if (resettingLayer == "Numbers")
   },
 });
 
@@ -2439,6 +2438,19 @@ addLayer("Rings", {
       effectDescription: "Keep {} upgrades on reset",
       done() { return player["Rings"].total.gte(12) }
     },
+    3: {
+      requirementDescription: "12 total <b>·</b>",
+      effectDescription: "Keep {} upgrades on reset",
+      done() { return player["Rings"].total.gte(100) }
+    },
+  },
+  challenges: {
+    11: {
+      name: "Upgraded <b>Z<sub>2</sub></b>",
+      challengeDescription: "You don't get the bonus from Cyclic Groups",
+      rewardDescription: "<b>Z<sub>2</sub></b> gets a secondary bonus",
+      canComplete: function () { return player.points.gte(1e300) },
+    },
   },
   layerShown() {
     return hasUpgrade("Groups", 15) || player[this.layer].points.gte(1) || getBuyableAmount(this.layer, 11).gte(1);
@@ -2467,6 +2479,8 @@ addLayer("Rings", {
           },
         ],
         "milestones",
+        "blank",
+        "challenges"
       ],
     },
   },
