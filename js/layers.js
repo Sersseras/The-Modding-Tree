@@ -1036,7 +1036,7 @@ addLayer("Numbers", {
         );
       },
       unlocked() {
-        return hasUpgrade(this.layer, 16);
+        return hasUpgrade(this.layer, 16) || hasMilestone("Rings", 1);
       },
     },
     12: {
@@ -1055,7 +1055,26 @@ addLayer("Numbers", {
         );
       },
       unlocked() {
-        return hasUpgrade("Groups", 13);
+        return hasUpgrade("Groups", 13) || hasMilestone("Rings", 1);
+      },
+    },
+    13: {
+      title() {
+        return "{} Autobuyer";
+      },
+      display() {
+        return getClickableState(this.layer, this.id);
+      },
+      canClick: true,
+      onClick() {
+        setClickableState(
+          this.layer,
+          this.id,
+          getClickableState(this.layer, this.id) == "Off" ? "On" : "Off"
+        );
+      },
+      unlocked() {
+        return hasMilestone("Rings", 0);
       },
     },
   },
@@ -1068,7 +1087,7 @@ addLayer("Numbers", {
         "main-display",
         "prestige-button",
         "blank",
-        "clickables",
+        ["row", [["clickable", 13], ["clickable", 11], ["clickable", 12]]],
         "blank",
         [
           "row",
@@ -1097,11 +1116,16 @@ addLayer("Numbers", {
     },
   },
   automate() {
+    if (hasMilestone("Rings", 0) && !(getClickableState(this.layer, 13) == "Off")) doReset(this.layer);
     if (
-      hasUpgrade(this.layer, 16) &&
+      (hasUpgrade(this.layer, 16) || hasMilestone("Rings", 1)) &&
       !(getClickableState(this.layer, 11) == "Off")
     )
       for (let i = 11; i <= 16; i++) buyBuyable(this.layer, i);
+  },
+  doReset(resettingLayer) {
+    layerDataReset(this.layer, (hasMilestone("Rings", 2)) ? ["upgrades"] : [])
+    //if (resettingLayer == "Numbers")
   },
 });
 
@@ -2325,7 +2349,7 @@ addLayer("Groups", {
   },
   automate() {
     if (
-      hasUpgrade(this.layer, 13) &&
+      (hasUpgrade(this.layer, 13) || hasMilestone("Rings", 1)) &&
       !(getClickableState("Numbers", 12) == "Off")
     ) {
       for (let i = 12; i <= 20; i++) buyBuyable(this.layer, i);
@@ -2367,7 +2391,7 @@ addLayer("Rings", {
         return new Decimal(1.6).pow(x).round();
       },
       effect() {
-        return getBuyableAmount(this.layer, this.id).mul(0.5);
+        return getBuyableAmount(this.layer, this.id).mul(0.75);
       },
       display() {
         return (
@@ -2399,8 +2423,52 @@ addLayer("Rings", {
       },
     },
   },
+  milestones: {
+    0: {
+      requirementDescription: "1 total <b>·</b>",
+      effectDescription: "Holds down n for you",
+      done() { return player["Rings"].total.gte(1) }
+    },
+    1: {
+      requirementDescription: "3 total <b>·</b>",
+      effectDescription: "Keep autobuyers",
+      done() { return player["Rings"].total.gte(3) }
+    },
+    2: {
+      requirementDescription: "12 total <b>·</b>",
+      effectDescription: "Keep {} upgrades on reset",
+      done() { return player["Rings"].total.gte(12) }
+    },
+  },
   layerShown() {
     return hasUpgrade("Groups", 15) || player[this.layer].points.gte(1) || getBuyableAmount(this.layer, 11).gte(1);
+  },
+  tabFormat: {
+    "Main tab": {
+      content: [
+        "main-display",
+        "prestige-button",
+        "blank",
+        "clickables",
+        "blank",
+        [
+          "row",
+          [
+            ["buyable", 11],
+          ],
+        ],
+        "blank",
+        "upgrades",
+        "blank",
+        [
+          "display-text",
+          function () {
+            return "Total <b>·</b>:" + format(player["Rings"].total);
+          },
+        ],
+        "milestones",
+      ],
+    },
   },
   automate() { },
 });
