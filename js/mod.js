@@ -58,7 +58,8 @@ function getPointGen() {
     mul = mul.mul(tmp["Numbers"].upgrades[21].effect);
 
   let pow = new Decimal(1);
-  pow = pow.mul(cyclicEffect());
+
+  if (!inChallenge("Rings", 11)) pow = pow.mul(cyclicEffect());
 
   gain = gain.add(add).mul(mul).pow(pow);
 
@@ -107,4 +108,4 @@ function maxTickLength() {
 
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
-function fixOldSave(oldVersion) {}
+function fixOldSave(oldVersion) { }

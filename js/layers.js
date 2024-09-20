@@ -318,7 +318,12 @@ addLayer("Numbers", {
       title: "Kreiners Blessing",
       description: "{} is less expensive, based on Bres",
       effect() {
-        return player.points.add(3).ln().pow(10);
+        let pow = new Decimal(10);
+        if (inChallenge("Rings", 11))
+          pow = pow.mul(getBuyableAmount("Groups", 12).mul(0.105).add(1));
+        if (hasChallenge("Rings", 11) && getBuyableAmount("Groups", 12).gte(1))
+          pow = pow.mul(tmp["Groups"].buyables[12].effect);
+        return player.points.add(3).ln().pow(pow);
       },
       fullDisplay() {
         return (
@@ -1313,7 +1318,7 @@ addLayer("Groups", {
       },
     },
     12: {
-      title: "Z<sub>2</sub> = S<sub>2</sub> = D<sub>2</sub>",
+      title() { return (hasChallenge("Rings", 11)) ? "ℤ/<sub>(2)</sub>" : "Z<sub>2</sub> = S<sub>2</sub> = D<sub>2</sub>" },
       cost(x) {
         return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
@@ -1328,7 +1333,7 @@ addLayer("Groups", {
           this.cost() +
           " <b>2</b><br><br>Currently: ^" +
           format(this.effect()) +
-          " Bre gain"
+          " Bre gain and Kreiners Blessing"
         );
       },
       canAfford() {
@@ -2439,17 +2444,21 @@ addLayer("Rings", {
       done() { return player["Rings"].total.gte(12) }
     },
     3: {
-      requirementDescription: "12 total <b>·</b>",
-      effectDescription: "Keep {} upgrades on reset",
-      done() { return player["Rings"].total.gte(100) }
+      requirementDescription: "50 total <b>·</b>",
+      effectDescription: "Unlock a challenge",
+      done() { return player["Rings"].total.gte(50) }
     },
   },
   challenges: {
     11: {
       name: "Upgraded <b>Z<sub>2</sub></b>",
-      challengeDescription: "You don't get the bonus from Cyclic Groups",
-      rewardDescription: "<b>Z<sub>2</sub></b> gets a secondary bonus",
-      canComplete: function () { return player.points.gte(1e300) },
+      challengeDescription: "You don't get the bonus from Cyclic Groups but Kreiners Blessing gets boosted based on <b>Z<sub>2</sub></b>",
+      goalDescription: "9 <b>Z<sub>2</sub></b>",
+      rewardDescription: "<b>Z<sub>2</sub></b> gets upgraded",
+      canComplete: function () { return getBuyableAmount("Groups", 12).gte(13) },
+      unlocked() {
+        return hasMilestone(this.layer, 3);
+      },
     },
   },
   layerShown() {
