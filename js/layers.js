@@ -2455,7 +2455,7 @@ addLayer("Rings", {
       challengeDescription: "You don't get the bonus from Cyclic Groups but Kreiners Blessing gets boosted based on <b>Z<sub>2</sub></b>",
       goalDescription: "9 <b>Z<sub>2</sub></b>",
       rewardDescription: "<b>Z<sub>2</sub></b> gets upgraded",
-      canComplete: function () { return getBuyableAmount("Groups", 12).gte(13) },
+      canComplete: function () { return getBuyableAmount("Groups", 14).gte(13) },
       unlocked() {
         return hasMilestone(this.layer, 3);
       },
