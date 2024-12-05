@@ -303,7 +303,7 @@ addLayer("Numbers", {
           format(this.effect()) +
           "<br><br>Cost: " +
           format(this.cost) +
-          " <b>Bres</b>"
+          " Bres"
         );
       },
       cost: new Decimal(1e15),
@@ -320,8 +320,8 @@ addLayer("Numbers", {
       effect() {
         let pow = new Decimal(10);
         if (inChallenge("Rings", 11))
-          pow = pow.mul(getBuyableAmount("Groups", 12).mul(0.105).add(1));
-        if (hasChallenge("Rings", 11) && getBuyableAmount("Groups", 12).gte(1))
+          pow = pow.mul(getBuyableAmount("Groups", 14).mul(0.117).add(1));
+        if (hasChallenge("Rings", 11) && getBuyableAmount("Groups", 14).gte(1))
           pow = pow.mul(tmp["Groups"].buyables[12].effect);
         return player.points.add(3).ln().pow(pow);
       },
@@ -1046,7 +1046,7 @@ addLayer("Numbers", {
     },
     12: {
       title() {
-        return "Cyclic Group Autobuyer";
+        return (hasMilestone("Rings", 4)) ? "Group Autobuyer" : "Cyclic Group Autobuyer";
       },
       display() {
         return getClickableState(this.layer, this.id);
@@ -1125,11 +1125,17 @@ addLayer("Numbers", {
     if (
       (hasUpgrade(this.layer, 16) || hasMilestone("Rings", 1)) &&
       !(getClickableState(this.layer, 11) == "Off")
-    )
+    ) {
       for (let i = 11; i <= 16; i++) buyBuyable(this.layer, i);
+      if (hasMilestone("Rings", 3)) {
+        for (let i = 17; i <= 19; i++) buyBuyable(this.layer, i);
+        for (let i = 21; i <= 27; i++) buyBuyable(this.layer, i);
+      }
+    }
   },
   doReset(resettingLayer) {
-    layerDataReset(this.layer, (hasMilestone("Rings", 2)) ? ["upgrades"] : [])
+    if (resettingLayer != this.layer)
+      layerDataReset(this.layer, (hasMilestone("Rings", 2)) ? ["upgrades"] : [])
   },
 });
 
@@ -1318,7 +1324,7 @@ addLayer("Groups", {
       },
     },
     12: {
-      title() { return (hasChallenge("Rings", 11)) ? "ℤ/<sub>(2)</sub>" : "Z<sub>2</sub> = S<sub>2</sub> = D<sub>2</sub>" },
+      title: "Z<sub>2</sub> = S<sub>2</sub> = D<sub>2</sub>",
       cost(x) {
         return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
@@ -1333,7 +1339,7 @@ addLayer("Groups", {
           this.cost() +
           " <b>2</b><br><br>Currently: ^" +
           format(this.effect()) +
-          " Bre gain and Kreiners Blessing"
+          " Bre gain"
         );
       },
       canAfford() {
@@ -1409,7 +1415,7 @@ addLayer("Groups", {
       },
     },
     14: {
-      title: "Z<sub>4</sub> = Dic<sub>1</sub>",
+      title() { return (hasChallenge("Rings", 11)) ? "ℤ/(4)" : "Z<sub>4</sub> = Dic<sub>1</sub>" },
       cost(x) {
         return new Decimal(x).add(1).mul(x.pow(0.25).add(2).ln()).round();
       },
@@ -1424,7 +1430,7 @@ addLayer("Groups", {
           this.cost() +
           " <b>4</b><br><br>Currently: ^" +
           format(this.effect()) +
-          " Bre gain"
+          " Bre gain" + (hasChallenge("Rings", 11) ? " and Kreiners Blessing" : "")
         );
       },
       canAfford() {
@@ -1828,7 +1834,7 @@ addLayer("Groups", {
           this.id,
           getBuyableAmount(this.layer, this.id).add(1)
         );
-        player.points = new Decimal(0);
+        player.points = Decimal.dZero;
       },
       unlocked() {
         return hasUpgrade(this.layer, 12);
@@ -2166,7 +2172,7 @@ addLayer("Groups", {
         setBuyableAmount(
           "Numbers",
           19,
-          getBuyableAmount("Numbers".layer, 19).sub(previousCost)
+          getBuyableAmount("Numbers", 19).sub(previousCost)
         );
       },
       unlocked() {
@@ -2212,17 +2218,17 @@ addLayer("Groups", {
         setBuyableAmount(
           "Numbers",
           19,
-          getBuyableAmount("Numbers".layer, 19).sub(previousCost)
+          getBuyableAmount("Numbers", 19).sub(previousCost)
         );
         setBuyableAmount(
           this.layer,
           13,
-          getBuyableAmount("Numbers".layer, 13).sub(previousCost)
+          getBuyableAmount(this.layer, 13).sub(previousCost)
         );
         setBuyableAmount(
           this.layer,
           14,
-          getBuyableAmount("Numbers".layer, 14).sub(previousCost)
+          getBuyableAmount(this.layer, 14).sub(previousCost)
         );
       },
       unlocked() {
@@ -2268,17 +2274,17 @@ addLayer("Groups", {
         setBuyableAmount(
           "Numbers",
           22,
-          getBuyableAmount("Numbers".layer, 22).sub(previousCost)
+          getBuyableAmount("Numbers", 22).sub(previousCost)
         );
         setBuyableAmount(
           this.layer,
           13,
-          getBuyableAmount("Numbers".layer, 13).sub(previousCost)
+          getBuyableAmount("Numbers", 13).sub(previousCost)
         );
         setBuyableAmount(
           this.layer,
           14,
-          getBuyableAmount("Numbers".layer, 14).sub(previousCost)
+          getBuyableAmount("Numbers", 14).sub(previousCost)
         );
       },
       unlocked() {
@@ -2356,8 +2362,13 @@ addLayer("Groups", {
       (hasUpgrade(this.layer, 13) || hasMilestone("Rings", 1)) &&
       !(getClickableState("Numbers", 12) == "Off")
     ) {
-      for (let i = 12; i <= 20; i++) buyBuyable(this.layer, i);
-      for (let i = 23; i <= 29; i++) buyBuyable(this.layer, i);
+      if (!hasMilestone("Rings", 4)) {
+        for (let i = 12; i <= 20; i++) buyBuyable(this.layer, i);
+        for (let i = 23; i <= 29; i++) buyBuyable(this.layer, i);
+      }
+      else {
+        for (let i = 11; i <= 32; i++) buyBuyable(this.layer, i);
+      }
     }
   },
 });
@@ -2377,7 +2388,7 @@ addLayer("Rings", {
   resource: "·",
   baseResource: "Bres",
   type: "normal",
-  exponent: 0.1,
+  exponent: 0.028,
   gainMult() {
     return new Decimal(1);
   },
@@ -2395,7 +2406,7 @@ addLayer("Rings", {
         return new Decimal(1.6).pow(x).round();
       },
       effect() {
-        return getBuyableAmount(this.layer, this.id).mul(0.75);
+        return getBuyableAmount(this.layer, this.id);
       },
       display() {
         return (
@@ -2439,25 +2450,35 @@ addLayer("Rings", {
       done() { return player["Rings"].total.gte(3) }
     },
     2: {
-      requirementDescription: "12 total <b>·</b>",
+      requirementDescription: "5 total <b>·</b>",
       effectDescription: "Keep {} upgrades on reset",
-      done() { return player["Rings"].total.gte(12) }
+      done() { return player["Rings"].total.gte(5) }
     },
     3: {
-      requirementDescription: "50 total <b>·</b>",
+      requirementDescription: "7 total <b>·</b>",
+      effectDescription: "Number Autobuyer now autobuys every number",
+      done() { return player["Rings"].total.gte(7) }
+    },
+    4: {
+      requirementDescription: "13 total <b>·</b>",
+      effectDescription: "Cyclic Group Autobuyer loses \"Cyclic\"",
+      done() { return player["Rings"].total.gte(13) }
+    },
+    5: {
+      requirementDescription: "27 total <b>·</b>",
       effectDescription: "Unlock a challenge",
-      done() { return player["Rings"].total.gte(50) }
+      done() { return player["Rings"].total.gte(27) }
     },
   },
   challenges: {
     11: {
-      name: "Upgraded <b>Z<sub>2</sub></b>",
-      challengeDescription: "You don't get the bonus from Cyclic Groups but Kreiners Blessing gets boosted based on <b>Z<sub>2</sub></b>",
-      goalDescription: "9 <b>Z<sub>2</sub></b>",
-      rewardDescription: "<b>Z<sub>2</sub></b> gets upgraded",
-      canComplete: function () { return getBuyableAmount("Groups", 14).gte(13) },
+      name: "Upgraded <b>Z<sub>4</sub></b>",
+      challengeDescription: "You don't get the bonus from Cyclic Groups but Kreiners Blessing gets boosted based on <b>Z<sub>4</sub></b>",
+      goalDescription: "8 <b>Z<sub>4</sub></b>",
+      rewardDescription: "<b>Z<sub>4</sub></b> gets upgraded to a ring",
+      canComplete: function () { return getBuyableAmount("Groups", 14).gte(8) },
       unlocked() {
-        return hasMilestone(this.layer, 3);
+        return hasMilestone(this.layer, 5);
       },
     },
   },
