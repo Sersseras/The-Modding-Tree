@@ -338,7 +338,7 @@ addLayer("Numbers", {
           " Bres"
         );
       },
-      cost: new Decimal(2e73),
+      cost: new Decimal(1e75),
       currencyInternalName() {
         return "points";
       },
@@ -1166,7 +1166,7 @@ addLayer("Groups", {
           " {}"
         );
       },
-      cost: new Decimal(3),
+      cost: new Decimal(4),
       currencyInternalName() {
         return "points";
       },
@@ -1256,7 +1256,7 @@ addLayer("Groups", {
     },
     15: {
       title: "Binary Operations II",
-      description: "Trivial and cyclic groups no longer cost anything",
+      description: "Unlock Rings",
       fullDisplay() {
         return (
           "<h3>" +
@@ -2446,7 +2446,7 @@ addLayer("Rings", {
     },
     1: {
       requirementDescription: "3 total <b>·</b>",
-      effectDescription: "Keep autobuyers",
+      effectDescription: "Keep autobuyers on reset",
       done() { return player["Rings"].total.gte(3) }
     },
     2: {
