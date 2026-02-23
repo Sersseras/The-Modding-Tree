@@ -1,7 +1,7 @@
 let modInfo = {
-	name: "The ??? Tree",
-	author: "nobody",
-	pointsName: "points",
+	name: "The Algebra Tree",
+	author: "Alvi Deiectiones",
+	pointsName: "Sets",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -13,7 +13,7 @@ let modInfo = {
 // Set your version in num and name
 let VERSION = {
 	num: "0.0",
-	name: "Literally nothing",
+	name: "The Algebra Tree",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -41,7 +41,7 @@ function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
-	let gain = new Decimal(1)
+	let gain = new Decimal(0)
 	return gain
 }
 
