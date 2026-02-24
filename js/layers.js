@@ -16,7 +16,7 @@ addLayer("p", {
     upgrades: {
         11: {
             fullDisplay() {
-                return "At first, there was nothing. <br> <br> Unlocks the empty set."
+                return "At first, there was nothing.<br><br>Unlocks the Empty Set."
             },
             canAfford() {
                 return true
@@ -31,8 +31,15 @@ addLayer("p", {
         11: {
             title: "&empty;",
             cost(x) { return new Decimal(1).mul(x) },
-            display() { return "Blah" },
-            canAfford() { return player.points.gte(this.cost()) },
+            effect(x) {
+                return x
+            },
+            display() {
+                return "You have " + getBuyableAmount(this.layer, this.id) + " Empty Sets<br>Effect: +" + buyableEffect(this.layer, this.id) + " Set generation"
+            },
+            canAfford() {
+                return player.points.gte(this.cost())
+            },
             buy() {
                 player.points = player.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
