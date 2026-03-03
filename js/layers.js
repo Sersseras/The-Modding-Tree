@@ -9,6 +9,7 @@ addLayer('Set', {
     requires: new Decimal(0),
     baseResource: "Sets",
     baseAmount() {return player.points},
+    resource: "Sets",
     type: "none",
     row: 0,
     layerShown(){return true},
@@ -117,7 +118,11 @@ addLayer('Mag', {
     requires: new Decimal(100),              
                                             
     type: "normal",                        
-    exponent: 0.25,                          
+    exponent: 0.3,                          
+
+    effect() {
+        return player[this.layer].points.add(1).ln().add(1)
+    },
 
     gainMult() {                           
         return new Decimal(1)               
@@ -132,11 +137,72 @@ addLayer('Mag', {
     
     tabFormat: [
         "main-display",
+        ["display-text",
+            function() { return "which multiply point production by " + format(tmp[this.layer].effect)},
+        ],
+        "blank",
         "prestige-button",
         "blank",
         "resource-display",
         ["display-text",
             function() { return "A Magma (M, &middot;) is a Set M together with a binary operation _&middot;_ : M &times; M &rarr; M" },
-        ]
+        ],
+        "blank",
+        "blank",
+        "blank",
+        ["display-text",
+            function() { return "Choose one carefully." },
+            {"font-size": "32px"},
+        ],
+        "upgrades"
+    ],
+
+    upgrades: {
+        11: {
+            title: "Divisibility",
+            description: "You can divide now.",
+            cost: new Decimal(10),
+        },
+        12: {
+            title: "Unitality",
+            description: "You have a unit now.",
+            cost: new Decimal(10),
+        },
+        13: {
+            title: "Associativity",
+            description: "You are associative now.",
+            cost: new Decimal(10),
+        },
+    },
+
+    branches: ['Qgrp']
+})
+
+addLayer('Qgrp', {
+    startData() { return {                  
+        unlocked: true,                    
+        points: new Decimal(0),             
+    }},
+
+    color: "#00FF00",                      
+    resource: "Quasigroups",
+    type: "none",          
+    row: 2,                                
+
+    baseResource: "Magmas",                 
+    baseAmount() { return player['Mag'].points },                        
+
+    layerShown() {
+        return hasUpgrade('Mag', 11)
+    },
+    
+    tabFormat: [
+        "resource-display",
+        ["display-text",
+            function() { return "A Quasigroup (Q, &middot;, /, \\) is a Magma (Q, &middot;) together with binary operations _/_, _\\_ : Q &times; Q &rarr; Q such that the following commute" },
+        ],
+        ["display-image",
+            'https://i.imgur.com/ZIWhJNX.png'
+        ],
     ]
 })

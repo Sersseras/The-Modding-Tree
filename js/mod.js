@@ -48,6 +48,7 @@ function getMul() {
 	let mul = new Decimal(1)
 
 	mul = mul.mul(buyableEffect('Set', 12))
+	mul = mul.mul(tmp['Mag'].effect)
 
 	return mul
 }
