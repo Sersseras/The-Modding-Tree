@@ -6,7 +6,7 @@ let modInfo = {
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (2), // Used for hard resets and new players
+	initialStartPoints: new Decimal (1), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
@@ -49,6 +49,8 @@ function getMul() {
 
 	mul = mul.mul(buyableEffect('Set', 12))
 	mul = mul.mul(tmp['Mag'].effect)
+	if (hasUpgrade('Set', 21))
+		mul = mul.mul(upgradeEffect('Set', 21))
 
 	return mul
 }

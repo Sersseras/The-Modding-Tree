@@ -28,13 +28,13 @@ addLayer('Set', {
         },
         12: {
             fullDisplay() {
-                return "At last, there was conothing.<br><br>Unlocks the Singleton.<br><br>Cost: 100 Sets"
+                return "At last, there was conothing.<br><br>Unlocks the Singleton.<br><br>Cost: 50 Sets"
             },
             canAfford() {
-                return player.points.gte(100)
+                return player.points.gte(50)
             },
             pay() {
-                player.points = player.points.sub(100)
+                player.points = player.points.sub(50)
             },
             unlocked () {
                 return hasUpgrade(this.layer, 11)
@@ -54,14 +54,31 @@ addLayer('Set', {
                 return hasUpgrade(this.layer, 12)
             }
         },
+        21: {
+            fullDisplay() {
+                return "Gregor Kempers Blessing<br><br>Sets boost Set gain.<br><br>Effect: " + format(this.effect()) + "x to Set gain<br><br>Cost: 10,000 Sets"
+            },
+            effect() {
+                return player.points.add(1).ln().add(1)
+            },
+            canAfford() {
+                return player.points.gte(10000)
+            },
+            pay() {
+                player.points = player.points.sub(10000)
+            },
+            unlocked () {
+                return hasUpgrade('QGrp', 12)
+            }
+        },
     },
 
     buyables: {
         11: {
             title: "&empty;",
-            cost(x) { return new Decimal(10).pow(x) },
+            cost(x) { return (x == 0) ? 0 : new Decimal(10).pow(x) },
             effect(x) {
-                return x
+                return buyableEffect('QGrp', 11).add(1).mul(x)
             },
             display() {
                 return "You have " + getBuyableAmount(this.layer, this.id) + " Empty Sets<br><br>Effect: +" + format(buyableEffect(this.layer, this.id)) + " Set generation<br><br>Cost: " + format(this.cost(getBuyableAmount(this.layer, this.id))) + " Sets"
@@ -81,7 +98,7 @@ addLayer('Set', {
             title: "&lowast;",
             cost(x) { return Math.round(new Decimal(2).pow(x.add(1))) },
             effect(x) {
-                return x.add(1)
+                return x.add(1).mul(buyableEffect('QGrp', 12))
             },
             display() {
                 return "You have " + getBuyableAmount(this.layer, this.id) + " Singletons<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x Set generation<br><br>Cost: " + this.cost(getBuyableAmount(this.layer, this.id)) + " Empty Sets"
@@ -118,7 +135,7 @@ addLayer('Mag', {
     requires: new Decimal(100),              
                                             
     type: "normal",                        
-    exponent: 0.3,                          
+    exponent: 0.5,                          
 
     effect() {
         return player[this.layer].points.add(1).ln().add(1)
@@ -132,7 +149,7 @@ addLayer('Mag', {
     },
 
     layerShown() {
-        return hasUpgrade('Set', 13) || player[this.layer].points.gte(1)
+        return hasUpgrade('Set', 13) || player[this.layer].points.gte(1) || hasUpgrade(this.layer, 11) || hasUpgrade(this.layer, 12) || hasUpgrade(this.layer, 13)
     },
     
     tabFormat: [
@@ -161,24 +178,24 @@ addLayer('Mag', {
         11: {
             title: "Divisibility",
             description: "You can divide now.",
-            cost: new Decimal(10),
+            cost: new Decimal(5),
         },
         12: {
             title: "Unitality",
             description: "You have a unit now.",
-            cost: new Decimal(10),
+            cost: new Decimal(5),
         },
         13: {
             title: "Associativity",
             description: "You are associative now.",
-            cost: new Decimal(10),
+            cost: new Decimal(5),
         },
     },
 
-    branches: ['Qgrp']
+    branches: ['QGrp']
 })
 
-addLayer('Qgrp', {
+addLayer('QGrp', {
     startData() { return {                  
         unlocked: true,                    
         points: new Decimal(0),             
@@ -204,5 +221,78 @@ addLayer('Qgrp', {
         ["display-image",
             'https://i.imgur.com/ZIWhJNX.png'
         ],
-    ]
+        "buyables",
+        "upgrades",
+    ],
+
+    upgrades: {
+        11: {
+            fullDisplay() {
+                return "At first, there was nothing.<br><br>Unlocks the Empty Quasigroup.<br><br>Cost: 1 Magma"
+            },
+            canAfford() {
+                return player['Mag'].points.gte(1)
+            },
+            pay() {
+                player['Mag'].points = player['Mag'].points.sub(1)
+            },
+        },
+        12: {
+            fullDisplay() {
+                return "At last, there was conothing.<br><br>Unlocks the Trivial Quasigroup.<br><br>Cost: 10 Magmas"
+            },
+            canAfford() {
+                return player['Mag'].points.gte(10)
+            },
+            pay() {
+                player['Mag'].points = player['Mag'].points.sub(10)
+            },
+            unlocked () {
+                return hasUpgrade(this.layer, 11)
+            }
+        },
+    },
+
+    buyables: {
+        11: {
+            title: "&empty;",
+            cost(x) { return Math.round(new Decimal(3).pow(x.add(1))) },
+            effect(x) {
+                return x.mul(0.5)
+            },
+            display() {
+                return "You have " + getBuyableAmount(this.layer, this.id) + " Empty Quasigroup<br><br>Effect: +" + format(buyableEffect(this.layer, this.id)) + " to Empty Set effect base<br><br>Cost: " + format(this.cost(getBuyableAmount(this.layer, this.id))) + " Empty Sets"
+            },
+            canAfford() {
+                return getBuyableAmount('Set', 11).gte(this.cost())
+            },
+            buy() {
+                setBuyableAmount('Set', 11, getBuyableAmount('Set', 11).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            unlocked() {
+                return hasUpgrade(this.layer, 11)
+            }
+        },
+        12: {
+            title: "&lowast;",
+            cost(x) { return Math.round(new Decimal(1.5).pow(x.add(1))) },
+            effect(x) {
+                return new Decimal(1.25).pow(x)
+            },
+            display() {
+                return "You have " + getBuyableAmount(this.layer, this.id) + " Trivial Quasigroups<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x to Singleton effect base<br><br>Cost: " + this.cost(getBuyableAmount(this.layer, this.id)) + " Singletons"
+            },
+            canAfford() {
+                return getBuyableAmount('Set', 12).gte(this.cost())
+            },
+            buy() {
+                setBuyableAmount('Set', 12, getBuyableAmount('Set', 12).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            unlocked() {
+                return hasUpgrade(this.layer, 12)
+            }
+        },
+    },
 })
