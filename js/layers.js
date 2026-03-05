@@ -260,16 +260,24 @@ addLayer('Mag', {
             title: "Divisibility",
             description: "You can divide now.",
             cost: new Decimal(5),
+            unlocked() {
+                return hasMilestone(this.layer, 4) || (hasMilestone(this.layer, 1) && ! (hasUpgrade(this.layer, 12) && hasUpgrade(this.layer, 13))) || (! hasUpgrade(this.layer, 12) && ! hasUpgrade(this.layer, 13))
+            }
         },
         12: {
             title: "Unitality",
             description: "You have a unit now.",
             cost: new Decimal(5),
+            unlocked() {
+                return hasMilestone(this.layer, 4) || (hasMilestone(this.layer, 1) && ! (hasUpgrade(this.layer, 11) && hasUpgrade(this.layer, 13))) || (! hasUpgrade(this.layer, 11) && ! hasUpgrade(this.layer, 13))
+            }
         },
         13: {
             title: "Associativity",
             description: "You are associative now.",
-            cost: new Decimal(5),
+            unlocked() {
+                return hasMilestone(this.layer, 4) || (hasMilestone(this.layer, 1) && ! (hasUpgrade(this.layer, 11) && hasUpgrade(this.layer, 12))) || (! hasUpgrade(this.layer, 11) && ! hasUpgrade(this.layer, 12))
+            }
         },
         21: {
             fullDisplay() {
