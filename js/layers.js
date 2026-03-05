@@ -234,7 +234,7 @@ addLayer('Mag', {
     tabFormat: [
         "main-display",
         ["display-text",
-            function() { return "which multiply Set gain by " + format(tmp[this.layer].effect)},
+            function() { return "which boost Set gain by " + format(tmp[this.layer].effect)},
         ],
         "blank",
         "prestige-button",
@@ -1123,7 +1123,7 @@ addLayer('Grp', {
     tabFormat: [
         "main-display",
         ["display-text",
-            function() { return "which multiply Set gain by " + format(tmp[this.layer].effect)},
+            function() { return "which boost Set gain by " + format(tmp[this.layer].effect)},
         ],
         "blank",
         "prestige-button",
