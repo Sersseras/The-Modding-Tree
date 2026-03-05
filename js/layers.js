@@ -321,6 +321,20 @@ addLayer('Mag', {
                 return hasUpgrade('Mag', 12) && hasUpgrade('Mag', 13)
             }
         },
+        31: {
+            fullDisplay() {
+                return "Finally, all three.<br><br>Unlocks Groups.<br><br>Cost: 1e14 Sets"
+            },
+            canAfford() {
+                return player.points.gte(1e14);
+            },
+            pay() {
+                player.points = player.points.sub(1e14);
+            },
+            unlocked () {
+                return hasUpgrade('Mag', 21) && hasUpgrade('Mag', 22) && hasUpgrade('Mag', 23)
+            }
+        },
     },
 
     milestones: {
@@ -846,6 +860,8 @@ addLayer('Loop', {
             }
         },
     },
+
+    branches: ['Grp']
 })
 
 addLayer('AssQGrp', {
@@ -965,6 +981,8 @@ addLayer('AssQGrp', {
             }
         },
     },
+
+    branches: ['Grp']
 })
 
 addLayer('Mon', {
@@ -1064,4 +1082,62 @@ addLayer('Mon', {
             }
         },
     },
+
+    branches: ['Grp']
+})
+
+addLayer('Grp', {
+    startData() { return {                  
+        unlocked: true,                    
+        points: new Decimal(0),             
+    }},
+
+    color: "#505050",                      
+    resource: "Groups",            
+    row: 4,                                
+
+    baseResource: "Magmas",                 
+    baseAmount() { return player['Mag'].points }, 
+
+    requires: new Decimal(1e18),              
+                                            
+    type: "static",                        
+    exponent: 2,                          
+
+    effect() {
+        return new Decimal(2).pow(x)
+    },
+
+    gainMult() {
+        return new Decimal(1)        
+    },
+    gainExp() {                             
+        return new Decimal(1)
+    },
+
+    layerShown() {
+        return hasUpgrade('Mag', 31) || player[this.layer].points.gte(1)
+    },
+    
+    tabFormat: [
+        "main-display",
+        ["display-text",
+            function() { return "which multiply Set gain by " + format(tmp[this.layer].effect)},
+        ],
+        "blank",
+        "prestige-button",
+        "blank",
+        "resource-display",
+        ["display-text",
+            function() { return "A Group (G, &middot;, /, \\, 1) is a Quasigroup (G, &middot;, /, \\), a Unital Magma (G, &middot;, 1), and a Semigroup (G, &middot;)<br>Equivalently, a Group (G, &middot;, 1, _<sup>-1</sup>) is a Monoid (G &middot;, 1) such that the following commutes" },
+        ],
+        "blank",
+        ["display-image",
+            'https://i.imgur.com/AkEwtsJ.png'
+        ],
+        "blank",
+        "upgrades",
+        "blank",
+        "milestones",
+    ],
 })
