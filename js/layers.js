@@ -64,16 +64,16 @@ addLayer('Set', {
         },
         21: {
             fullDisplay() {
-                return "Gregor Kempers blessing<br><br>Sets boost Set gain.<br><br>Currently: " + format(this.effect()) + "x to Set gain<br><br>Cost: 10,000 Sets"
+                return "Gregor Kempers blessing<br><br>Sets boost Set gain.<br><br>Currently: " + format(this.effect()) + "x to Set gain<br><br>Cost: 9,001 Sets"
             },
             effect() {
                 return player.points.add(1).ln().add(1)
             },
             canAfford() {
-                return player.points.gte(10000)
+                return player.points.gte(9001)
             },
             pay() {
-                player.points = player.points.sub(10000)
+                player.points = player.points.sub(9001)
             },
             unlocked () {
                 return hasUpgrade('QGrp', 12) || hasUpgrade('UMag', 21) || hasUpgrade('SGrp', 13)
