@@ -275,6 +275,7 @@ addLayer('Mag', {
         13: {
             title: "Associativity",
             description: "You are associative now.",
+            cost: new Decimal(5),
             unlocked() {
                 return hasMilestone(this.layer, 4) || (hasMilestone(this.layer, 1) && ! (hasUpgrade(this.layer, 11) && hasUpgrade(this.layer, 12))) || (! hasUpgrade(this.layer, 11) && ! hasUpgrade(this.layer, 12))
             }
