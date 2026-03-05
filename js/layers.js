@@ -124,6 +124,38 @@ addLayer('Set', {
                 return hasUpgrade(this.layer, 12)
             }
         },
+        17: {
+            title: "Devvv",
+            cost(x) { return new Decimal(0) },
+            canAfford() {
+                return true
+            },
+            display() {
+                return "x10 Sets leel"
+            },
+            buy() {
+                player.points = player.points.mul(10)
+            },
+            unlocked() {
+                return true
+            }
+        },
+        18: {
+            title: "Devv",
+            cost(x) { return new Decimal(0) },
+            canAfford() {
+                return true
+            },
+            display() {
+                return "x10 Magma leel"
+            },
+            buy() {
+                player['Mag'].points = player['Mag'].points.mul(10)
+            },
+            unlocked() {
+                return true
+            }
+        },
         19: {
             title: "Dev",
             cost(x) { return new Decimal(0) },
@@ -241,13 +273,13 @@ addLayer('Mag', {
         },
         21: {
             fullDisplay() {
-                return "You can have both?<br><br>Unlocks Loops.<br><br>Cost: 25,000,000 Sets"
+                return "You can have both?<br><br>Unlocks Associative Quasigroups.<br><br>Cost: " + format(new Decimal(5e6).mul((hasUpgrade(this.layer, 22)) ? 100 : 1).mul((hasUpgrade(this.layer, 23)) ? 5000 : 1).div((hasUpgrade(this.layer, 22) && hasUpgrade(this.layer, 23)) ? 25 : 1)) + " Sets"
             },
             canAfford() {
-                return player.points.gte(25e6)
+                return player.points.gte(new Decimal(5e6).mul((hasUpgrade(this.layer, 22)) ? 100 : 1).mul((hasUpgrade(this.layer, 23)) ? 5000 : 1).div((hasUpgrade(this.layer, 22) && hasUpgrade(this.layer, 23)) ? 25 : 1))
             },
             pay() {
-                player.points = player.points.sub(25e6)
+                player.points = player.points.sub(new Decimal(5e6).mul((hasUpgrade(this.layer, 22)) ? 100 : 1).mul((hasUpgrade(this.layer, 23)) ? 5000 : 1).div((hasUpgrade(this.layer, 22) && hasUpgrade(this.layer, 23)) ? 25 : 1))
             },
             unlocked () {
                 return hasUpgrade('Mag', 11) && hasUpgrade('Mag', 12)
@@ -255,13 +287,13 @@ addLayer('Mag', {
         },
         22: {
             fullDisplay() {
-                return "Can you have both?<br><br>Unlocks Associative Quasigroups.<br><br>Cost: 5,000,000 Sets"
+                return "Can you have both?<br><br>Unlocks Associative Quasigroups.<br><br>Cost: " + format(new Decimal(5e6).mul((hasUpgrade(this.layer, 21)) ? 1000 : 1).mul((hasUpgrade(this.layer, 23)) ? 5000 : 1).div((hasUpgrade(this.layer, 21) && hasUpgrade(this.layer, 23)) ? 25 : 1)) + " Sets"
             },
             canAfford() {
-                return player.points.gte(5e6)
+                return player.points.gte(new Decimal(5e6).mul((hasUpgrade(this.layer, 21)) ? 1000 : 1).mul((hasUpgrade(this.layer, 23)) ? 5000 : 1).div((hasUpgrade(this.layer, 21) && hasUpgrade(this.layer, 23)) ? 25 : 1))
             },
             pay() {
-                player.points = player.points.sub(5e6)
+                player.points = player.points.sub(new Decimal(5e6).mul((hasUpgrade(this.layer, 21)) ? 1000 : 1).mul((hasUpgrade(this.layer, 23)) ? 5000 : 1).div((hasUpgrade(this.layer, 21) && hasUpgrade(this.layer, 23)) ? 25 : 1))
             },
             unlocked () {
                 return hasUpgrade('Mag', 11) && hasUpgrade('Mag', 13)
@@ -269,13 +301,13 @@ addLayer('Mag', {
         },
         23: {
             fullDisplay() {
-                return "Both you can have.<br><br>Unlocks Monoids.<br><br>Cost: 5,000,000 Sets"
+                return "Both you can have.<br><br>Unlocks Monoids.<br><br>Cost: " + format(new Decimal(5e6).mul((hasUpgrade(this.layer, 21)) ? 1000 : 1).mul((hasUpgrade(this.layer, 22)) ? 100 : 1).div((hasUpgrade(this.layer, 21) && hasUpgrade(this.layer, 22)) ? 20 : 1)) + " Sets"
             },
             canAfford() {
-                return player.points.gte(5e6)
+                return player.points.gte(new Decimal(5e6).mul((hasUpgrade(this.layer, 21)) ? 1000 : 1).mul((hasUpgrade(this.layer, 22)) ? 100 : 1).div((hasUpgrade(this.layer, 21) && hasUpgrade(this.layer, 22)) ? 20 : 1))
             },
             pay() {
-                player.points = player.points.sub(5e6)
+                player.points = player.points.sub(new Decimal(5e6).mul((hasUpgrade(this.layer, 21)) ? 1000 : 1).mul((hasUpgrade(this.layer, 22)) ? 100 : 1).div((hasUpgrade(this.layer, 21) && hasUpgrade(this.layer, 22)) ? 20 : 1))
             },
             unlocked () {
                 return hasUpgrade('Mag', 12) && hasUpgrade('Mag', 13)
@@ -741,13 +773,13 @@ addLayer('Loop', {
     upgrades: {
         11: {
             fullDisplay() {
-                return "Loop de Loop.<br><br>Unlocks the Trivial Loop.<br><br>Cost: 1,000,000 Magma"
+                return "Loop de Loop.<br><br>Unlocks the Trivial Loop.<br><br>Cost: 500,000 Magma"
             },
             canAfford() {
-                return player['Mag'].points.gte(1e6)
+                return player['Mag'].points.gte(5e5)
             },
             pay() {
-                player['Mag'].points = player['Mag'].points.sub(1e6)
+                player['Mag'].points = player['Mag'].points.sub(5e5)
             },
         },
         21: {
