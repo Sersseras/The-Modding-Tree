@@ -51,6 +51,7 @@ function getMul() {
 	mul = mul.mul(tmp['Mag'].effect)
 	if (hasUpgrade('Set', 21))
 		mul = mul.mul(upgradeEffect('Set', 21))
+	mul = mul.mul(buyableEffect('Mon', 21))
 
 	return mul
 }
