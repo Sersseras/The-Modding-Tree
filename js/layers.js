@@ -282,7 +282,7 @@ addLayer('Mag', {
         },
         21: {
             fullDisplay() {
-                return "You can have both?<br><br>Unlocks Associative Quasigroups.<br><br>Cost: " + format(new Decimal(5e6).mul((hasUpgrade(this.layer, 22)) ? 100 : 1).mul((hasUpgrade(this.layer, 23)) ? 5000 : 1).div((hasUpgrade(this.layer, 22) && hasUpgrade(this.layer, 23)) ? 25 : 1)) + " Sets"
+                return "You can have both?<br><br>Unlocks Loops.<br><br>Cost: " + format(new Decimal(5e6).mul((hasUpgrade(this.layer, 22)) ? 100 : 1).mul((hasUpgrade(this.layer, 23)) ? 5000 : 1).div((hasUpgrade(this.layer, 22) && hasUpgrade(this.layer, 23)) ? 25 : 1)) + " Sets"
             },
             canAfford() {
                 return player.points.gte(new Decimal(5e6).mul((hasUpgrade(this.layer, 22)) ? 100 : 1).mul((hasUpgrade(this.layer, 23)) ? 5000 : 1).div((hasUpgrade(this.layer, 22) && hasUpgrade(this.layer, 23)) ? 25 : 1))
