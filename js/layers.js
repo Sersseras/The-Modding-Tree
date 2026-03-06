@@ -565,7 +565,7 @@ addLayer('UMag', {
         },
         22: {
             fullDisplay() {
-                return "Gero Frieseckes Second blessing<br><br>Squares Magmas Layer Effect<br><br>Cost: 3 Trvial Unital Magmas"
+                return "Gero Frieseckes second blessing<br><br>Squares Magmas Layer Effect<br><br>Cost: 3 Trvial Unital Magmas"
             },
             canAfford() {
                 return getBuyableAmount(this.layer, 11).gte(3)
