@@ -796,7 +796,7 @@ addLayer('Loop', {
     upgrades: {
         11: {
             fullDisplay() {
-                return "Loop de Loop.<br><br>Unlocks the Trivial Loop.<br><br>Cost: 500,000 Magma"
+                return "Loop de Loop.<br><br>Unlocks the Trivial Loop.<br><br>Cost: 500,000 Magmas"
             },
             canAfford() {
                 return player['Mag'].points.gte(5e5)
@@ -898,7 +898,7 @@ addLayer('AssQGrp', {
     upgrades: {
         11: {
             fullDisplay() {
-                return "At first, there was nothing.<br><br>Unlocks the Empty Associative Quasigroup.<br><br>Cost: 250,000 Magma"
+                return "At first, there was nothing.<br><br>Unlocks the Empty Associative Quasigroup.<br><br>Cost: 250,000 Magmas"
             },
             canAfford() {
                 return player['Mag'].points.gte(25e4)
@@ -1019,7 +1019,7 @@ addLayer('Mon', {
     upgrades: {
         11: {
             fullDisplay() {
-                return "Monoid is love, Monoid is life.<br><br>Unlocks the Trivial Monoid.<br><br>Cost: 1,000,000 Magma"
+                return "Monoid is love, Monoid is life.<br><br>Unlocks the Trivial Monoid.<br><br>Cost: 1,000,000 Magmas"
             },
             canAfford() {
                 return player['Mag'].points.gte(1e6)
@@ -1030,7 +1030,7 @@ addLayer('Mon', {
         },
         12: {
             fullDisplay() {
-                return "Set of words from an alphabet X.<br><br>Unlocks the free Monoid on one element.<br><br>Cost: 2,500,000 Magma"
+                return "Set of words from an alphabet X.<br><br>Unlocks the free Monoid on one element.<br><br>Cost: 2,500,000 Magmas"
             },
             canAfford() {
                 return player['Mag'].points.gte(25e5)
