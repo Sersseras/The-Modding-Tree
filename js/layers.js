@@ -1106,7 +1106,7 @@ addLayer('Grp', {
     exponent: 2,                          
 
     effect() {
-        return new Decimal(2).pow(x)
+        return new Decimal(2).pow(player[this.layer].points)
     },
 
     gainMult() {
