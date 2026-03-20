@@ -62,12 +62,26 @@ addLayer('Set', {
                 return hasUpgrade(this.layer, 12) && ! player['Mag'].points.gte(1) && ! hasUpgrade('Mag', 11) && ! hasUpgrade('Mag', 12) && ! hasUpgrade('Mag', 13)
             }
         },
+        14: {
+            fullDisplay() {
+                return "Another useless layer?<br><br>Unlocks Pointed Sets<br><br>Cost: 1e42 Sets"
+            },
+            canAfford() {
+                return player.points.gte(1e42)
+            },
+            pay() {
+                player.points = player.points.sub(1e42)
+            },
+            unlocked () {
+                return player['Grp'].points.gte(7) && ! player['Set<sub>&lowast;</sub>'].points.gte(1)
+            }
+        },
         21: {
             fullDisplay() {
                 return "Gregor Kempers blessing<br><br>Sets boost Set gain.<br><br>Currently: " + format(this.effect()) + "x to Set gain<br><br>Cost: 9,001 Sets"
             },
             effect() {
-                return player.points.add(1).ln().add(1).pow(tmp['FlexMag'].effect)
+                return player.points.add(1).ln().add(1)
             },
             canAfford() {
                 return player.points.gte(9001)
@@ -86,9 +100,11 @@ addLayer('Set', {
             title: "&empty;",
             cost(x) { return (x == 0) ? 0 : new Decimal(10).pow(x).mul(buyableEffect('SGrp', 12).mul(tmp['Grp'].effect)) },
             effect(x) {
-                return buyableEffect('QGrp', 11).add(1).mul(x)
+                return buyableEffect('QGrp', 11).add(1).mul(x.add((hasUpgrade('FlexMag', 12) ? Math.round(getBuyableAmount(this.layer, 11).div(2)) : 0))).pow(tmp['FlexMag'].effect)
             },
             display() {
+                if (hasUpgrade('FlexMag', 12))
+                    return "You have " + getBuyableAmount(this.layer, this.id) + " + " + Math.round(getBuyableAmount(this.layer, 11).div(2)) + " Empty Sets<br><br>Effect: +" + format(buyableEffect(this.layer, this.id)) + " Set gain<br><br>Cost: " + format(this.cost()) + " Sets"
                 return "You have " + getBuyableAmount(this.layer, this.id) + " Empty Sets<br><br>Effect: +" + format(buyableEffect(this.layer, this.id)) + " Set gain<br><br>Cost: " + format(this.cost()) + " Sets"
             },
             canAfford() {
@@ -107,9 +123,11 @@ addLayer('Set', {
             title: "&lowast;",
             cost(x) { return Math.round(new Decimal(2).pow(x.add(1)).mul(tmp['Grp'].effect).sub(buyableEffect('SGrp', 11))) },
             effect(x) {
-                return x.add(1).mul(buyableEffect('QGrp', 12)).pow(buyableEffect('FlexMag', 11))
+                return x.add((hasUpgrade('FlexMag', 12)) ? Math.round(getBuyableAmount(this.layer, 12).div(2)) : 0).add(1).mul(buyableEffect('QGrp', 12)).pow(tmp['AltMag'].effect)
             },
             display() {
+                if (hasUpgrade('SGrp', 21))
+                    return "You have " + getBuyableAmount(this.layer, this.id) + " + " + Math.round(getBuyableAmount(this.layer, 12).div(2)) + " Singletons<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x Set and Magma gain<br><br>Cost: " + this.cost() + " Empty Sets"
                 if (hasUpgrade('SGrp', 21))
                     return "You have " + getBuyableAmount(this.layer, this.id) + " Singletons<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x Set and Magma gain<br><br>Cost: " + this.cost() + " Empty Sets"
                 return "You have " + getBuyableAmount(this.layer, this.id) + " Singletons<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x Set gain<br><br>Cost: " + this.cost() + " Empty Sets"
@@ -200,7 +218,7 @@ addLayer('Set', {
             buyBuyable(this.layer, 12) 
     },
 
-    branches: ['Mag']
+    branches: ['Mag', 'Set<sub>&lowast;</sub>']
 })
 
 addLayer('Mag', {
@@ -211,7 +229,8 @@ addLayer('Mag', {
 
     color: "#A0A0A0",                      
     resource: "Magmas",            
-    row: 1,                                
+    row: 1,
+    position: 0,                    
 
     baseResource: "Sets",                 
     baseAmount() { return player.points }, 
@@ -242,6 +261,10 @@ addLayer('Mag', {
         mul = mul.mul(buyableEffect('Grp', 13))
         if (hasUpgrade('Grp', 13))
             mul = mul.mul(upgradeEffect('Grp', 13))
+        if (hasUpgrade('FlexMag', 11))
+            mul = mul.mul(upgradeEffect('FlexMag', 11))
+        if (hasUpgrade('AltMag', 11))
+            mul = mul.mul(upgradeEffect('AltMag', 11))
 
         return mul             
     },
@@ -374,13 +397,13 @@ addLayer('Mag', {
         },
         33: {
             fullDisplay() {
-                return "An Alternative?<br><br>Unlocks Alternative Magmas<br><br>Cost: 1e23 Sets"
+                return "An Alternative?<br><br>Unlocks Alternative Magmas<br><br>Cost: 1e28 Sets"
             },
             canAfford() {
-                return player.points.gte(1e23)
+                return player.points.gte(1e28)
             },
             pay() {
-                player.points = player.points.sub(1e23)
+                player.points = player.points.sub(1e28)
             },
             unlocked () {
                 return player['FlexMag'].total.gte(3) && ! player['AltMag'].total.gte(1)
@@ -417,6 +440,8 @@ addLayer('Mag', {
     },  
 
     passiveGeneration() {
+        if (hasMilestone('FlexMag', 1))
+            return new Decimal(10)
         if (hasMilestone('FlexMag', 0))
             return new Decimal(1)
         if (hasMilestone(this.layer, 3))
@@ -425,6 +450,72 @@ addLayer('Mag', {
     },
 
     branches: ['QGrp', 'UMag', 'SGrp', 'FlexMag']
+})
+
+addLayer('Set<sub>&lowast;</sub>', {
+    startData() { return {                  
+        unlocked: true,                    
+        points: new Decimal(0),             
+    }},
+
+    color: "#A0A0F0",                      
+    resource: "Pointed Sets",            
+    row: 1,
+    position: 1,                         
+
+    baseResource: "Sets",                 
+    baseAmount() { return player.points }, 
+
+    requires: new Decimal(1e42),              
+                                            
+    type: "normal",                        
+    exponent: 0.5,
+
+    effect() {
+        return player[this.layer].points
+    },
+
+    gainMult() {
+        mul = new Decimal (1)
+
+        return mul             
+    },
+    gainExp() {                             
+        return new Decimal(1)
+    },
+
+    layerShown() {
+        return hasUpgrade('Set', 14) || player[this.layer].points.gte(1)
+    },
+    
+    tabFormat: [
+        "main-display",
+        ["display-text",
+            function() { return "which boost Set gain by " + format(tmp[this.layer].effect)},
+        ],
+        "blank",
+        "prestige-button",
+        "blank",
+        "resource-display",
+        ["display-text",
+            function() { return "A Pointed Set (S, p) is a Set S together with a nullary operation p : &lowast; &rarr; S" },
+        ],
+        "blank",
+        "upgrades",
+        "blank",
+        "milestones",
+    ],
+
+    upgrades: {
+    },
+
+    milestones: {
+    },  
+
+    passiveGeneration() {
+    },
+
+    branches: ['UMag']
 })
 
 addLayer('QGrp', {
@@ -511,7 +602,7 @@ addLayer('QGrp', {
             title: "&empty;",
             cost(x) { return Math.round(new Decimal(2.5).pow(x.add(1)).mul(buyableEffect('AssQGrp', 12)).mul(tmp['Grp'].effect)) },
             effect(x) {
-                return x.mul(new Decimal(0.5).add(buyableEffect('Grp', 14))).mul((hasUpgrade('Loop', 22)) ? buyableEffect('Loop', 11) : 1)
+                return x.mul(new Decimal(0.5).add(buyableEffect('Grp', 14))).mul((hasUpgrade('Loop', 22)) ? buyableEffect('Loop', 11) : 1).pow(buyableEffect('FlexMag', 11))
             },
             display() {
                 return "You have " + getBuyableAmount(this.layer, this.id) + " Empty Quasigroups<br><br>Effect: +" + format(buyableEffect(this.layer, this.id)) + " to Empty Set effect base<br><br>Cost: " + this.cost() + " Empty Sets"
@@ -576,18 +667,23 @@ addLayer('FlexMag', {
     baseResource: "Magmas",                 
     baseAmount() { return player['Mag'].points }, 
 
-    requires: new Decimal(1e25),
+    requires: new Decimal(1e24),
                                             
     type: "static",
     base: new Decimal(10),
-    exponent: new Decimal(1.3),
+    exponent: new Decimal(1.4325),
 
     effect() {
-        return new Decimal(0.1).mul(player[this.layer].points).add(1).pow(tmp['AltMag'].effect)
+        return new Decimal(0.1).mul(player[this.layer].points).add(1)
     },
 
     gainMult() {
-        return new Decimal(1)
+        mul = new Decimal(1)
+        
+        if (hasUpgrade('Grp', 14))
+            mul = mul.mul(upgradeEffect('Grp', 14))
+
+        return mul
     },
     
     gainExp() {
@@ -601,7 +697,7 @@ addLayer('FlexMag', {
     tabFormat: [
         "main-display",
         ["display-text",
-            function() { return "which raises Gregor Kempers Blessing effect to the " + format(tmp[this.layer].effect)},
+            function() { return "which raises Empty Set effect to the " + format(tmp[this.layer].effect)},
         ],
         "blank",
         "prestige-button",
@@ -623,15 +719,49 @@ addLayer('FlexMag', {
         "milestones",
     ],
 
+    upgrades: {
+        11: {
+            fullDisplay() {
+                return "Most natural Flexible Magmas are Algebras.<br><br>Flexible Magma count boosts Magma gain.<br><br>Currently: " + format(this.effect()) + "x to Magma gain<br><br>Cost: 3 Sedenions"
+            },
+            effect() {
+                return new Decimal(5).pow(getBuyableAmount(this.layer, 11))
+            },
+            canAfford() {
+                return getBuyableAmount(this.layer, 11).gte(3)
+            },
+            pay() {
+                setBuyableAmount(this.layer, 11, getBuyableAmount(this.layer, 11).sub(3))
+            },
+            unlocked() {
+                return player[this.layer].points.gte(3)
+            }
+        },
+        12: {
+            fullDisplay() {
+                return "Folkmar Bornemanns blessing<br><br>Get +50% simulated Empty Sets and Singletons.<br><br>Cost: 4 Sedenions"
+            },
+            canAfford() {
+                return getBuyableAmount(this.layer, 11).gte(4)
+            },
+            pay() {
+                setBuyableAmount(this.layer, 11, getBuyableAmount(this.layer, 11).sub(4))
+            },
+            unlocked() {
+                return player[this.layer].points.gte(7) && hasUpgrade('SGrp', 21)
+            }
+        },
+    },
+
     buyables: {
         11: {
             title: "𝕊",
             cost(x) { return Math.round(new Decimal(1e10).pow(x).mul(tmp['Grp'].effect)) },
             effect(x) {
-                return new Decimal(1.05).pow(x).pow(buyableEffect('AltMag', 11))
+                return new Decimal(0.05).mul(x).add(1).pow(buyableEffect('AltMag', 11))
             },
             display() {
-                return "You have " + getBuyableAmount(this.layer, this.id) + " Sedenions<br><br>Effect: ^" + format(buyableEffect(this.layer, this.id)) + " to Singleton effect<br><br>Cost: " + format(this.cost()) + " Magmas"
+                return "You have " + getBuyableAmount(this.layer, this.id) + " Sedenions<br><br>Effect: ^" + format(buyableEffect(this.layer, this.id)) + " to Empty Quasigroup effect<br><br>Cost: " + format(this.cost()) + " Magmas"
             },
             canAfford() {
                 return player['Mag'].points.gte(this.cost())
@@ -651,6 +781,11 @@ addLayer('FlexMag', {
             requirementDescription: "1 Flexible Magma total",
             effectDescription: "Get 100% of Magma gain per second",
             done() { return player[this.layer].total.gte(1) }
+        },
+        1: {
+            requirementDescription: "9 Flexible Magma total",
+            effectDescription: "Get 1000% of Magma gain per second",
+            done() { return player[this.layer].total.gte(9) }
         },
     },
 
@@ -898,8 +1033,8 @@ addLayer('SGrp', {
             },
             display() {
                 if (getBuyableAmount('Mon', 11).gte(1))
-                    return "You have " + getBuyableAmount(this.layer, this.id) + " + " + buyableEffect('Mon', 11) + " Trivial Semigroups<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x to Empty Set price<br><br>Cost: " + this.cost() + " Singletons"
-                return "You have " + getBuyableAmount(this.layer, this.id) + " Trivial Semigroups<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x to Empty Set price<br><br>Cost: " + this.cost() + " Singletons"
+                    return "You have " + getBuyableAmount(this.layer, this.id) + " + " + buyableEffect('Mon', 11) + " Trivial Semigroups<br><br>Effect: " + formatSmall(buyableEffect(this.layer, this.id)) + "x to Empty Set price<br><br>Cost: " + this.cost() + " Singletons"
+                return "You have " + getBuyableAmount(this.layer, this.id) + " Trivial Semigroups<br><br>Effect: " + formatSmall(buyableEffect(this.layer, this.id)) + "x to Empty Set price<br><br>Cost: " + this.cost() + " Singletons"
             },
             canAfford() {
                 return getBuyableAmount('Set', 12).gte(this.cost())
@@ -963,15 +1098,15 @@ addLayer('AltMag', {
     baseResource: "Flexible Magmas",                 
     baseAmount() { return player['FlexMag'].points }, 
 
-    requires: new Decimal(4),
+    requires: new Decimal(6),
                                             
     type: "static",
-    base: new Decimal(1.25),
-    exponent: new Decimal(1.325),
+    base: new Decimal(1.333),
+    exponent: new Decimal(0.82),
     roundUpCost: true,
 
     effect() {
-        return new Decimal(0.5).mul(player[this.layer].points).add(1)
+        return new Decimal(0.1).mul(player[this.layer].points).add(1)
     },
 
     gainMult() {
@@ -989,7 +1124,7 @@ addLayer('AltMag', {
     tabFormat: [
         "main-display",
         ["display-text",
-            function() { return "which raises Flexible Magmas layer effect to the " + format(tmp[this.layer].effect)},
+            function() { return "which raises Singleton effect to the " + format(tmp[this.layer].effect)},
         ],
         "blank",
         "prestige-button",
@@ -1011,12 +1146,32 @@ addLayer('AltMag', {
         "milestones",
     ],
 
+    upgrades: {
+        11: {
+            fullDisplay() {
+                return "Most natural Alternatives Magmas are Algebras, too.<br><br>Alternative Magma count boosts Magma gain.<br><br>Currently: " + format(this.effect()) + "x to Magma gain<br><br>Cost: 5 Octonions"
+            },
+            effect() {
+                return new Decimal(5).pow(getBuyableAmount(this.layer, 11))
+            },
+            canAfford() {
+                return getBuyableAmount(this.layer, 11).gte(5)
+            },
+            pay() {
+                setBuyableAmount(this.layer, 11, getBuyableAmount(this.layer, 11).sub(5))
+            },
+            unlocked() {
+                return player[this.layer].points.gte(3)
+            }
+        },
+    },
+
     buyables: {
         11: {
             title: "𝕆",
             cost(x) { return Math.round(new Decimal(1.5).pow(x.add(1)).mul(tmp['Grp'].effect)) },
             effect(x) {
-                return new Decimal(1.1).pow(x)
+                return new Decimal(0.1).mul(x).add(1)
             },
             display() {
                 return "You have " + getBuyableAmount(this.layer, this.id) + " Octonions<br><br>Effect: ^" + format(buyableEffect(this.layer, this.id)) + " to Sedenions effect<br><br>Cost: " + this.cost() + " Sedenions"
@@ -1444,7 +1599,7 @@ addLayer('Grp', {
     tabFormat: [
         "main-display",
         ["display-text",
-            function() { return "which multiply all lower layer buyable prices by " + format(tmp[this.layer].effect)},
+            function() { return "which multiply all lower layer buyable prices by " + formatSmall(tmp[this.layer].effect)},
         ],
         "blank",
         "prestige-button",
@@ -1515,6 +1670,23 @@ addLayer('Grp', {
                 return hasMilestone(this.layer, 3)
             }
         },
+        14: {
+            fullDisplay() {
+                return "Hans Peter Kruses third blessing<br><br>Groups lower Flexible Magma cost<br><br>Currently: x" + formatSmall(this.effect()) + " to Flexible Magma cost<br><br>Cost: 1e34 Sets"
+            },
+            effect() {
+                return new Decimal(0.8).pow(player[this.layer].points)
+            },
+            canAfford() {
+                return player.points.gte(1e34)
+            },
+            pay() {
+                player.points = player.points.sub(1e34)
+            },
+            unlocked() {
+                return hasMilestone(this.layer, 4)
+            }
+        },
     },
 
     buyables: {
@@ -1562,7 +1734,7 @@ addLayer('Grp', {
             title: "Z<sub>n</sub>",
             cost(x) { return Math.round(new Decimal(1.4).pow(x)) },
             effect(x) {
-                return x.add(1)
+                return new Decimal(1).add(buyableEffect(this.layer, 15)).mul(x).add(1)
             },
             display() {
                 return "You have " + getBuyableAmount(this.layer, this.id) + " Cyclic Groups of order n<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x to Magma gain<br><br>Cost: " + this.cost() + " Trivial Loops"
@@ -1592,6 +1764,26 @@ addLayer('Grp', {
             },
             buy() {
                 setBuyableAmount('Mon', 21, getBuyableAmount('Mon', 21).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            unlocked() {
+                return hasMilestone(this.layer, 3)
+            }
+        },
+        15: {
+            title: "D<sub>n</sub>",
+            cost(x) { return Math.round(new Decimal(1.3).pow(x.add(1))) },
+            effect(x) {
+                return x.mul(0.75)
+            },
+            display() {
+                return "You have " + getBuyableAmount(this.layer, this.id) + " Dihedral Groups of order n<br><br>Effect: +" + format(buyableEffect(this.layer, this.id)) + " to Cyclic Group effect base<br><br>Cost: " + this.cost() + " Cyclic Groups"
+            },
+            canAfford() {
+                return getBuyableAmount(this.layer, 13).gte(this.cost())
+            },
+            buy() {
+                setBuyableAmount(this.layer, 13, getBuyableAmount(this.layer, 13).sub(this.cost(getBuyableAmount(this.layer, this.id))))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
