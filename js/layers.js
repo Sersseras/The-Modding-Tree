@@ -137,7 +137,7 @@ addLayer('Set', {
             },
             buy() {
                 if (! hasMilestone('Grp', 0))
-                    setBuyableAmount(this.layer, 11, getBuyableAmount(this.layer, 11).sub(Math.max(this.cost(getBuyableAmount(this.layer, this.id)), 0)))
+                    setBuyableAmount(this.layer, 11, getBuyableAmount(this.layer, 11).sub(Math.max(this.cost(), 0)))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -279,7 +279,7 @@ addLayer('Mag', {
     tabFormat: [
         "main-display",
         ["display-text",
-            function() { return "which boost Set gain by " + format(tmp[this.layer].effect)},
+            function() { return "which boost Set gain by " + format(tmp[this.layer].effect) },
         ],
         "blank",
         "prestige-button",
@@ -455,7 +455,8 @@ addLayer('Mag', {
 addLayer('Set<sub>&lowast;</sub>', {
     startData() { return {                  
         unlocked: true,                    
-        points: new Decimal(0),             
+        points: new Decimal(0),    
+        generatorPoints: new Decimal(0)         
     }},
 
     color: "#A0A0F0",                      
@@ -472,17 +473,28 @@ addLayer('Set<sub>&lowast;</sub>', {
     exponent: 0.5,
 
     effect() {
-        return player[this.layer].points
+        return player[this.layer].generatorPoints.add(1).ln().add(1).pow((hasUpgrade(this.layer, 12) ? 1.2 : 1))
+    },
+
+    pointGeneration() {
+        return player[this.layer].points.pow((hasUpgrade(this.layer, 11) ? 1.2 : 1))
+    },
+
+    update(diff) {
+        player[this.layer].generatorPoints = player[this.layer].generatorPoints.add(tmp[this.layer].pointGeneration.mul(diff))
     },
 
     gainMult() {
         mul = new Decimal (1)
 
+        if (hasUpgrade(this.layer, 13))
+            mul = mul.mul(upgradeEffect(this.layer, 13))
+
         return mul             
     },
     gainExp() {                             
         return new Decimal(1)
-    },
+    },  
 
     layerShown() {
         return hasUpgrade('Set', 14) || player[this.layer].points.gte(1)
@@ -491,7 +503,7 @@ addLayer('Set<sub>&lowast;</sub>', {
     tabFormat: [
         "main-display",
         ["display-text",
-            function() { return "which boost Set gain by " + format(tmp[this.layer].effect)},
+            function() { return "which generate " + format(tmp[this.layer].pointGeneration) + " Points per second" },
         ],
         "blank",
         "prestige-button",
@@ -501,18 +513,109 @@ addLayer('Set<sub>&lowast;</sub>', {
             function() { return "A Pointed Set (S, p) is a Set S together with a nullary operation p : &lowast; &rarr; S" },
         ],
         "blank",
+        ["display-text",
+            function() { return "You have " + format(player[this.layer].generatorPoints) + " Points which boost Set gain by " + format(tmp[this.layer].effect) },
+        ],
+        "blank",
+        "buyables",
+        "blank",
         "upgrades",
         "blank",
         "milestones",
     ],
 
     upgrades: {
+        11: {
+            fullDisplay() {
+                return "Ulrich Bauers blessing<br><br>Improves Point generation formula<br><br>Cost: 5,000 Points"
+            },
+            canAfford() {
+                return player[this.layer].generatorPoints.gte(5000)
+            },
+            pay() {
+                player[this.layer].generatorPoints = player[this.layer].generatorPoints.sub(5000)
+            },
+            unlocked() {
+                return hasMilestone('AltMag', 2)
+            }
+        },
+        12: {
+            fullDisplay() {
+                return "Ulrich Bauers second blessing<br><br>Improves Point effect formula<br><br>Cost: 1,000,000 Points"
+            },
+            canAfford() {
+                return player[this.layer].generatorPoints.gte(1e6)
+            },
+            pay() {
+                player[this.layer].generatorPoints = player[this.layer].generatorPoints.sub(1e6)
+            },
+            unlocked() {
+                return hasMilestone('AltMag', 2)
+            }
+        },
+        13: {
+            fullDisplay() {
+                return "Ulrich Bauers third blessing<br><br>Points boost Pointed Set gain<br><br>Currently: " + format(this.effect()) + "x to Pointed Set gain<br><br>Cost: 10,000,000 Points"
+            },
+            effect() {
+                return tmp[this.layer].effect.pow(1/2)
+            },
+            canAfford() {
+                return player[this.layer].generatorPoints.gte(1e7)
+            },
+            pay() {
+                player[this.layer].generatorPoints = player[this.layer].generatorPoints.sub(1e7)
+            },
+            unlocked() {
+                return hasMilestone('AltMag', 2)
+            }
+        },
+        14: {
+            fullDisplay() {
+                return "At fourth or something, whatever.<br><br>Unlocks the trivial Pointed Set<br><br>Cost: 100,000,000 Points"
+            },
+            canAfford() {
+                return player[this.layer].generatorPoints.gte(1e8)
+            },
+            pay() {
+                player[this.layer].generatorPoints = player[this.layer].generatorPoints.sub(1e8)
+            },
+            unlocked() {
+                return hasMilestone('AltMag', 2)
+            }
+        },
+    },
+
+    buyables: {
+        11: {
+            title: "&lowast;",
+            cost(x) { return Math.round(new Decimal(25e7).pow(x.add(1))) },
+            effect(x) {
+                return x
+            },
+            display() {
+                return "You have " + getBuyableAmount(this.layer, this.id) + " trivial Pointed Sets<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x Set gain<br><br>Cost: " + format(this.cost()) + " Points"
+            },
+            canAfford() {
+                return getBuyableAmount(this.layer, 11).gte(this.cost())
+            },
+            buy() {
+                setBuyableAmount(this.layer, 11, getBuyableAmount(this.layer, 11).sub(this.cost()))
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            unlocked() {
+                return hasUpgrade(this.layer, 14)
+            }
+        },
     },
 
     milestones: {
     },  
 
     passiveGeneration() {
+        if (hasMilestone('Grp', 5))
+            return new Decimal(0.01)
+        return new Decimal(0)
     },
 
     branches: ['UMag']
@@ -612,7 +715,7 @@ addLayer('QGrp', {
             },
             buy() {
                 if (! hasMilestone('Grp', 2))
-                    setBuyableAmount('Set', 11, getBuyableAmount('Set', 11).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                    setBuyableAmount('Set', 11, getBuyableAmount('Set', 11).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -633,7 +736,7 @@ addLayer('QGrp', {
             },
             buy() {
                 if (! hasMilestone('Grp', 2))
-                    setBuyableAmount('Set', 12, getBuyableAmount('Set', 12).sub(Math.min(new Decimal(0), this.cost(getBuyableAmount(this.layer, this.id)))))
+                    setBuyableAmount('Set', 12, getBuyableAmount('Set', 12).sub(Math.min(new Decimal(0), this.cost())))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1018,7 +1121,7 @@ addLayer('SGrp', {
             },
             buy() {
                 if (! hasMilestone('Grp', 2))
-                    setBuyableAmount('Set', 11, getBuyableAmount('Set', 11).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                    setBuyableAmount('Set', 11, getBuyableAmount('Set', 11).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1041,7 +1144,7 @@ addLayer('SGrp', {
             },
             buy() {
                 if (! hasMilestone('Grp', 2))
-                    setBuyableAmount('Set', 12, getBuyableAmount('Set', 12).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                    setBuyableAmount('Set', 12, getBuyableAmount('Set', 12).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1200,6 +1303,11 @@ addLayer('AltMag', {
             effectDescription: "Autobuy Flexible Magmas",
             done() { return player[this.layer].total.gte(2) }
         },
+        2: {
+            requirementDescription: "4 Alternative Magma total",
+            effectDescription: "Unlocks Pointed Set upgrades",
+            done() { return player[this.layer].total.gte(4) }
+        },
     },
 })
 
@@ -1302,7 +1410,7 @@ addLayer('Loop', {
             },
             buy() {
                 if (! hasMilestone('Grp', 3))
-                    setBuyableAmount('UMag', 11, getBuyableAmount('UMag', 11).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                    setBuyableAmount('UMag', 11, getBuyableAmount('UMag', 11).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1409,7 +1517,7 @@ addLayer('AssQGrp', {
             },
             buy() {
                 if (! hasMilestone('Grp', 3))
-                    setBuyableAmount('SGrp', 11, getBuyableAmount('SGrp', 11).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                    setBuyableAmount('SGrp', 11, getBuyableAmount('SGrp', 11).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1430,7 +1538,7 @@ addLayer('AssQGrp', {
             },
             buy() {
                 if (! hasMilestone('Grp', 3))
-                    setBuyableAmount('SGrp', 12, getBuyableAmount('SGrp', 12).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                    setBuyableAmount('SGrp', 12, getBuyableAmount('SGrp', 12).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1521,7 +1629,7 @@ addLayer('Mon', {
             },
             buy() {
                 if (! hasMilestone('Grp', 3))
-                    setBuyableAmount('UMag', 11, getBuyableAmount('UMag', 11).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                    setBuyableAmount('UMag', 11, getBuyableAmount('UMag', 11).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1542,7 +1650,7 @@ addLayer('Mon', {
             },
             buy() {
                 if (! hasMilestone('Grp', 3))
-                    setBuyableAmount('SGrp', 21, getBuyableAmount('SGrp', 21).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                    setBuyableAmount('SGrp', 21, getBuyableAmount('SGrp', 21).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1703,7 +1811,7 @@ addLayer('Grp', {
                 return getBuyableAmount('AssQGrp', 12).gte(this.cost())
             },
             buy() {
-                setBuyableAmount('AssQGrp', 12, getBuyableAmount('AssQGrp', 12).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                setBuyableAmount('AssQGrp', 12, getBuyableAmount('AssQGrp', 12).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1723,7 +1831,7 @@ addLayer('Grp', {
                 return getBuyableAmount('AssQGrp', 11).gte(this.cost())
             },
             buy() {
-                setBuyableAmount('AssQGrp', 11, getBuyableAmount('AssQGrp', 11).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                setBuyableAmount('AssQGrp', 11, getBuyableAmount('AssQGrp', 11).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1743,7 +1851,7 @@ addLayer('Grp', {
                 return getBuyableAmount('Loop', 11).gte(this.cost())
             },
             buy() {
-                setBuyableAmount('Loop', 11, getBuyableAmount('Loop', 11).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                setBuyableAmount('Loop', 11, getBuyableAmount('Loop', 11).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1763,7 +1871,7 @@ addLayer('Grp', {
                 return getBuyableAmount('Mon', 21).gte(this.cost())
             },
             buy() {
-                setBuyableAmount('Mon', 21, getBuyableAmount('Mon', 21).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                setBuyableAmount('Mon', 21, getBuyableAmount('Mon', 21).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1783,7 +1891,7 @@ addLayer('Grp', {
                 return getBuyableAmount(this.layer, 13).gte(this.cost())
             },
             buy() {
-                setBuyableAmount(this.layer, 13, getBuyableAmount(this.layer, 13).sub(this.cost(getBuyableAmount(this.layer, this.id))))
+                setBuyableAmount(this.layer, 13, getBuyableAmount(this.layer, 13).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -1816,6 +1924,11 @@ addLayer('Grp', {
         4: {
             requirementDescription: "5 Groups total",
             effectDescription: "Groups don't reset anything",
+            done() { return player[this.layer].total.gte(5) }
+        },
+        5: {
+            requirementDescription: "8 Groups total",
+            effectDescription: "Gain 1% of Pointed Set gain per second",
             done() { return player[this.layer].total.gte(5) }
         },
     },

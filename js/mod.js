@@ -55,6 +55,7 @@ function getMul() {
 	mul = mul.mul(buyableEffect('Grp', 12))
 	if (hasUpgrade('Grp', 12))
 		mul = mul.mul(upgradeEffect('Grp', 12))
+	mul = mul.mul(tmp['Set<sub>&lowast;</sub>'].effect)
 
 	return mul
 }
