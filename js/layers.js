@@ -73,7 +73,7 @@ addLayer('Set', {
                 player.points = player.points.sub(1e42)
             },
             unlocked () {
-                return player['Grp'].points.gte(7) && ! player['Set<sub>&lowast;</sub>'].points.gte(1)
+                return player['Grp'].points.gte(7) && ! player['Set<sub>&lowast;</sub>'].points.gte(1) && ! hasMilestone('Grp', 5)
             }
         },
         21: {
@@ -81,7 +81,7 @@ addLayer('Set', {
                 return "Gregor Kempers blessing<br><br>Sets boost Set gain.<br><br>Currently: " + format(this.effect()) + "x to Set gain<br><br>Cost: 9,001 Sets"
             },
             effect() {
-                return player.points.add(1).ln().add(1)
+                return player.points.add(1).ln().add(1).pow((hasUpgrade('Set<sub>&lowast;</sub>', 15) ? 1.2 : 1))
             },
             canAfford() {
                 return player.points.gte(9001)
@@ -409,6 +409,20 @@ addLayer('Mag', {
                 return player['FlexMag'].total.gte(3) && ! player['AltMag'].total.gte(1)
             }
         },
+        34: {
+            fullDisplay() {
+                return "A ...? Nevermind.<br><br>Unlocks Moufang Loops<br><br>Cost: 5e52 Sets"
+            },
+            canAfford() {
+                return player.points.gte(5e52)
+            },
+            pay() {
+                player.points = player.points.sub(5e52)
+            },
+            unlocked () {
+                return hasUpgrade('Set<sub>&lowast;</sub>', 15) && ! player['MLoop'].total.gte(1)
+            }
+        },
     },
 
     milestones: {
@@ -477,7 +491,7 @@ addLayer('Set<sub>&lowast;</sub>', {
     },
 
     pointGeneration() {
-        return player[this.layer].points.pow((hasUpgrade(this.layer, 11) ? 1.2 : 1))
+        return player[this.layer].points.mul(hasUpgrade(this.layer, 22) ? upgradeEffect(this.layer, 22) : 1).pow((hasUpgrade(this.layer, 11) ? 1.2 : 1))
     },
 
     update(diff) {
@@ -584,23 +598,71 @@ addLayer('Set<sub>&lowast;</sub>', {
                 return hasMilestone('AltMag', 2)
             }
         },
+        15: {
+            fullDisplay() {
+                return "Gregor Kempers second blessing<br><br>Improves Gregor Kempers blessing formula<br><br>Cost: 1e10 Points"
+            },
+            canAfford() {
+                return player[this.layer].generatorPoints.gte(1e10)
+            },
+            pay() {
+                player[this.layer].generatorPoints = player[this.layer].generatorPoints.sub(1e10)
+            },
+            unlocked() {
+                return hasMilestone('AltMag', 2)
+            }
+        },
+        21: {
+            fullDisplay() {
+                return "David Mundeliuss blessing<br><br>Points boost Point gain.<br><br>Currently: " + format(this.effect()) + "x to Point gain<br><br>Cost: 1e20 Points"
+            },
+            effect() {
+                return player[this.layer].generatorPoints.add(1).ln().add(1)
+            },
+            canAfford() {
+                return player[this.layer].generatorPoints.gte(1e20)
+            },
+            pay() {
+                player[this.layer].generatorPoints = player[this.layer].generatorPoints.sub(1e20)
+            },
+            unlocked() {
+                return hasMilestone('AltMag', 2)
+            }
+        },
+        22: {
+            fullDisplay() {
+                return "David Mundeliuss second blessing<br><br>Pointed Sets boost Point gain.<br><br>Currently: " + format(this.effect()) + "x to Point gain<br><br>Cost: 1e24 Points"
+            },
+            effect() {
+                return player[this.layer].generatorPoints.add(1).ln().add(1)
+            },
+            canAfford() {
+                return player[this.layer].generatorPoints.gte(1e24)
+            },
+            pay() {
+                player[this.layer].generatorPoints = player[this.layer].generatorPoints.sub(1e24)
+            },
+            unlocked() {
+                return hasMilestone('AltMag', 2)
+            }
+        },
     },
 
     buyables: {
         11: {
             title: "&lowast;",
-            cost(x) { return Math.round(new Decimal(25e7).pow(x.add(1))) },
+            cost(x) { return Math.round(new Decimal(5e8).pow(x.add(1)).mul(tmp['Grp'].effect)) },
             effect(x) {
-                return x
+                return new Decimal(0.05).mul(x).add(1)
             },
             display() {
-                return "You have " + getBuyableAmount(this.layer, this.id) + " trivial Pointed Sets<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x Set gain<br><br>Cost: " + format(this.cost()) + " Points"
+                return "You have " + getBuyableAmount(this.layer, this.id) + " trivial Pointed Sets<br><br>Effect: ^" + format(buyableEffect(this.layer, this.id)) + " to Set gain<br><br>Cost: " + format(this.cost()) + " Points"
             },
             canAfford() {
-                return getBuyableAmount(this.layer, 11).gte(this.cost())
+                return player[this.layer].generatorPoints.gte(this.cost())
             },
             buy() {
-                setBuyableAmount(this.layer, 11, getBuyableAmount(this.layer, 11).sub(this.cost()))
+                player[this.layer].generatorPoints = player[this.layer].generatorPoints.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -777,7 +839,7 @@ addLayer('FlexMag', {
     exponent: new Decimal(1.4325),
 
     effect() {
-        return new Decimal(0.1).mul(player[this.layer].points).add(1)
+        return new Decimal(0.1).mul(player[this.layer].points).add(1).pow(tmp['MLoop'].effect)
     },
 
     gainMult() {
@@ -893,11 +955,16 @@ addLayer('FlexMag', {
     },
 
     resetsNothing() {
-        return hasMilestone('AltMag', 0)
+        return hasMilestone('AltMag', 0) || hasMilestone('MLoop', 0)
     },
 
     autoPrestige() {
         return hasMilestone('AltMag', 1)
+    },
+
+    automate() {
+        if (hasMilestone('Grp', 6))
+            buyBuyable(this.layer, 11)
     },
 
     branches: ['AltMag']
@@ -1209,7 +1276,7 @@ addLayer('AltMag', {
     roundUpCost: true,
 
     effect() {
-        return new Decimal(0.1).mul(player[this.layer].points).add(1)
+        return new Decimal(0.1).mul(player[this.layer].points).add(1).pow(tmp['MLoop'].effect)
     },
 
     gainMult() {
@@ -1309,6 +1376,12 @@ addLayer('AltMag', {
             done() { return player[this.layer].total.gte(4) }
         },
     },
+
+    resetsNothing() {
+        return hasMilestone('MLoop', 0)
+    },
+
+    branches: ['MLoop']
 })
 
 addLayer('Loop', {
@@ -1424,7 +1497,7 @@ addLayer('Loop', {
             buyBuyable(this.layer, 11)
     },
 
-    branches: ['Grp']
+    branches: ['MLoop', 'Grp']
 })
 
 addLayer('AssQGrp', {
@@ -1669,6 +1742,80 @@ addLayer('Mon', {
     branches: ['Grp']
 })
 
+addLayer('MLoop', {
+    startData() { return {                  
+        unlocked: true,                    
+        points: new Decimal(0),
+        total: new Decimal(0),          
+    }},
+
+    color: "#907303",                      
+    resource: "Moufang Loops",       
+    row: 4,
+    position: 0,       
+
+    baseResource: "Alternative Magmas",                 
+    baseAmount() { return player['AltMag'].points }, 
+
+    requires: new Decimal(5),
+                                            
+    type: "static",
+    base: new Decimal(1.333),
+    exponent: new Decimal(0.82),
+    roundUpCost: true,
+
+    effect() {
+        return new Decimal(0.2).mul(player[this.layer].points).add(1)
+    },
+
+    gainMult() {
+        return new Decimal(1)
+    },
+    
+    gainExp() {
+        return new Decimal(1)
+    },
+
+    layerShown() {
+        return hasUpgrade('Mag', 34) || player[this.layer].total.gte(1)
+    },
+    
+    tabFormat: [
+        "main-display",
+        ["display-text",
+            function() { return "which raises Flexible and Alternative Magma layer effect to the " + format(tmp[this.layer].effect)},
+        ],
+        "blank",
+        "prestige-button",
+        "blank",
+        "resource-display",
+        "blank",
+        ["display-text",
+            function() { return "A Moufang Loop (M, &middot;, /, \\, 1) is a Loop (L, &middot;, /, \\, 1) such that the following commutes" },
+        ],
+        "blank",
+        ["display-image",
+            'https://i.imgur.com/21XyUwT.png'
+        ],
+        "blank",
+        "buyables",
+        "blank",
+        "upgrades",
+        "blank",
+        "milestones",
+    ],
+
+    milestones: {
+        0: {
+            requirementDescription: "1 Moufang Loop total",
+            effectDescription: "Flexible and Alternative Magmas don't reset anything",
+            done() { return player[this.layer].total.gte(1) }
+        },
+    },
+
+    branches: ['Grp']
+})
+
 addLayer('Grp', {
     startData() { return {                  
         unlocked: true,                    
@@ -1678,7 +1825,8 @@ addLayer('Grp', {
 
     color: "#505050",                      
     resource: "Groups",            
-    row: 4,                                
+    row: 4,
+    position: 1,
 
     baseResource: "Magmas",                 
     baseAmount() { return player['Mag'].points }, 
@@ -1903,22 +2051,22 @@ addLayer('Grp', {
     milestones: {
         0: {
             requirementDescription: "1 Group total",
-            effectDescription: "Set buyables don't substract their cost",
+            effectDescription: "Set buyables don't subtract their cost",
             done() { return player[this.layer].total.gte(1) }
         },
         1: {
             requirementDescription: "2 Groups total",
-            effectDescription: "Autobuy Trivial Unital Magmas and Semigroups of positive integers and they don't substract their cost",
+            effectDescription: "Autobuy Trivial Unital Magmas and Semigroups of positive integers and they don't subtract their cost",
             done() { return player[this.layer].total.gte(2) }
         },
         2: {
             requirementDescription: "3 Groups total",
-            effectDescription: "Autobuy Quasigroup and Semigroup buyables and they don't substract their cost",
+            effectDescription: "Autobuy Quasigroup and Semigroup buyables and they don't subtract their cost",
             done() { return player[this.layer].total.gte(3) }
         },
         3: {
             requirementDescription: "4 Groups total",
-            effectDescription: "Autobuy Loop, Associative Quasigroup, and Monoid buyables and they don't substract their cost",
+            effectDescription: "Autobuy Loop, Associative Quasigroup, and Monoid buyables and they don't subtract their cost",
             done() { return player[this.layer].total.gte(4) }
         },
         4: {
@@ -1929,6 +2077,11 @@ addLayer('Grp', {
         5: {
             requirementDescription: "8 Groups total",
             effectDescription: "Gain 1% of Pointed Set gain per second",
+            done() { return player[this.layer].total.gte(5) }
+        },
+        6: {
+            requirementDescription: "9 Groups total",
+            effectDescription: "Autobuy Sedenions and they don't subtract their cost",
             done() { return player[this.layer].total.gte(5) }
         },
     },

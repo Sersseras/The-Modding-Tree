@@ -60,6 +60,14 @@ function getMul() {
 	return mul
 }
 
+function getPow() {
+	let pow = new Decimal(1)
+
+	pow = pow.mul(buyableEffect('Set<sub>&lowast;</sub>', 11))
+
+	return pow
+}
+
 // Calculate points/sec!
 function getPointGen() {
 	if(!canGenPoints())
@@ -69,7 +77,8 @@ function getPointGen() {
 
 	gain = gain.add(getAdd())
 	gain = gain.mul(getMul())
-	
+	gain = gain.pow(getPow())
+
 	return gain
 }
 
