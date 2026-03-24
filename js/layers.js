@@ -158,7 +158,7 @@ addLayer('Set', {
                 player['MLoop'].total = player['MLoop'].total.add(1)
             },
             unlocked() {
-                return false
+                return true
             }
         },
         16: {
@@ -175,7 +175,7 @@ addLayer('Set', {
                 player['Grp'].total = player['Grp'].total.add(1)
             },
             unlocked() {
-                return false
+                return true
             }
         },
         17: {
@@ -191,7 +191,7 @@ addLayer('Set', {
                 player.points = player.points.mul(10)
             },
             unlocked() {
-                return false
+                return true
             }
         },
         18: {
@@ -207,7 +207,7 @@ addLayer('Set', {
                 player['Mag'].points = player['Mag'].points.mul(10)
             },
             unlocked() {
-                return false
+                return true
             }
         },
         19: {
@@ -223,7 +223,7 @@ addLayer('Set', {
                 player['Mag'].points = player['Mag'].points.add(10)
             },
             unlocked() {
-                return false
+                return true
             }
         },
     },
@@ -1841,7 +1841,7 @@ addLayer('MLoop', {
                                             
     type: "static",
     base: new Decimal(1.4),
-    exponent: new Decimal(0.82),
+    exponent: new Decimal(1.5),
     roundUpCost: true,
 
     effect() {
@@ -1934,13 +1934,22 @@ addLayer('MLoop', {
         0: {
             requirementDescription: "1 Moufang Loop total",
             effectDescription: "Flexible and Alternative Magmas don't reset anything",
-            done() { return player[this.layer].total.gte(1) }
+            done() { return player[this.layer].total.gte(1) || hasMilestone('NARg', 1) }
         },
         1: {
             requirementDescription: "2 Moufang Loops total",
             effectDescription: "Autoprestige Flexible and Alternative Magmas",
-            done() { return player[this.layer].total.gte(2) }
+            done() { return player[this.layer].total.gte(2) || hasMilestone('NARg', 1) }
         },
+        2: {
+            requirementDescription: "3 Moufang Loops total",
+            effectDescription: "Moufang Loops don't reset anything",
+            done() { return player[this.layer].total.gte(3) || hasMilestone('NARg', 1) }
+        },
+    },
+
+    resetsNothing() {
+        return hasMilestone(this.layer, 2)
     },
 
     branches: ['Grp']
@@ -2094,7 +2103,7 @@ addLayer('Grp', {
             title: "&lowast;",
             cost(x) { return Math.round(new Decimal(1.5).pow(x.add(2))) },
             effect(x) {
-                return x
+                return new Decimal(1).add(buyableEffect('NARng', 11)).mul(x)
             },
             display() {
                 return "You have " + getBuyableAmount(this.layer, this.id) + " Trivial Groups<br><br>Effect: +" + buyableEffect(this.layer, this.id) + " to Trivial Monoid effect base and simulated Trivial Loops<br><br>Cost: " + this.cost() + " Trivial Associative Quasigroups"
@@ -2196,47 +2205,47 @@ addLayer('Grp', {
         0: {
             requirementDescription: "1 Group total",
             effectDescription: "Set buyables don't subtract their cost",
-            done() { return player[this.layer].total.gte(1) }
+            done() { return player[this.layer].total.gte(1) || hasMilestone('NARg', 1) }
         },
         1: {
             requirementDescription: "2 Groups total",
             effectDescription: "Autobuy Trivial Unital Magmas and Semigroups of positive integers and they don't subtract their cost",
-            done() { return player[this.layer].total.gte(2) }
+            done() { return player[this.layer].total.gte(2) || hasMilestone('NARg', 1) }
         },
         2: {
             requirementDescription: "3 Groups total",
             effectDescription: "Autobuy Quasigroup and Semigroup buyables and they don't subtract their cost",
-            done() { return player[this.layer].total.gte(3) }
+            done() { return player[this.layer].total.gte(3) || hasMilestone('NARg', 1) }
         },
         3: {
             requirementDescription: "4 Groups total",
             effectDescription: "Autobuy Loop, Associative Quasigroup, and Monoid buyables and they don't subtract their cost",
-            done() { return player[this.layer].total.gte(4) }
+            done() { return player[this.layer].total.gte(4) || hasMilestone('NARg', 1) }
         },
         4: {
             requirementDescription: "5 Groups total",
             effectDescription: "Groups don't reset anything",
-            done() { return player[this.layer].total.gte(5) }
+            done() { return player[this.layer].total.gte(5) || hasMilestone('NARg', 1) }
         },
         5: {
             requirementDescription: "8 Groups total",
             effectDescription: "Gain 1% of Pointed Set gain per second",
-            done() { return player[this.layer].total.gte(8) }
+            done() { return player[this.layer].total.gte(8) || hasMilestone('NARg', 1) }
         },
         6: {
             requirementDescription: "9 Groups total",
             effectDescription: "Autobuy Sedenions and they don't subtract their cost",
-            done() { return player[this.layer].total.gte(9) }
+            done() { return player[this.layer].total.gte(9) || hasMilestone('NARg', 1) }
         },
         7: {
             requirementDescription: "11 Groups total",
             effectDescription: "Autobuy Octonions and they don't subtract their cost",
-            done() { return player[this.layer].total.gte(11) }
+            done() { return player[this.layer].total.gte(11) || hasMilestone('NARg', 1) }
         },
         8: {
             requirementDescription: "13 Groups total",
             effectDescription: "Autobuy Trivial Pointed Sets and they don't subtract their cost",
-            done() { return player[this.layer].total.gte(13) }
+            done() { return player[this.layer].total.gte(13) || hasMilestone('NARg', 1) }
         },
     },
 
@@ -2340,6 +2349,11 @@ addLayer('NARg', {
             effectDescription: "Keep your Magma milestones on resets",
             done() { return player[this.layer].total.gte(1) }
         },
+        1: {
+            requirementDescription: "2000 Non-Abelian Rg total",
+            effectDescription: "Keep your Moufang Loop and Group milestones on resets",
+            done() { return player[this.layer].total.gte(2000) }
+        },
     }, 
 
     passiveGeneration() {
@@ -2365,7 +2379,7 @@ addLayer('NARng', {
     baseAmount() { return player['NARg'].points },                        
 
     layerShown() {
-        return false
+        return true
     },
     
     tabFormat: [
@@ -2382,26 +2396,26 @@ addLayer('NARng', {
     upgrades: {
         11: {
             fullDisplay() {
-                return "Should I call this zero?<br><br>Unlocks the Trivial Non-Abelian Rng.<br><br>Cost: 1 Non-Abelian Rg"
+                return "Should I call this trivial?<br><br>Unlocks the Zero Non-Abelian Rng.<br><br>Cost: 1e19 Magmas"
             },
             canAfford() {
-                return player['NARg'].points.gte(1)
+                return player['Mag'].points.gte(1e19)
             },
             pay() {
-                player['NARg'].points = player['NARg'].points.sub(1)
+                player['Mag'].points = player['Mag'].points.sub(1e19)
             },
         },
     },
 
     buyables: {
-        12: {
-            title: "&lowast;",
+        11: {
+            title: "0",
             cost(x) { return Math.round(new Decimal(1.6).pow(x.add(1))) },
             effect(x) {
                 return new Decimal(0.5).mul(x)
             },
             display() {
-                return "You have " + getBuyableAmount(this.layer, this.id) + " Trivial Non-Abelian Rngs<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x to Trivial Group effect base<br><br>Cost: " + this.cost() + " Trivial Groups"
+                return "You have " + getBuyableAmount(this.layer, this.id) + " Zero Non-Abelian Rngs<br><br>Effect: +" + format(buyableEffect(this.layer, this.id)) + " to Trivial Group effect base<br><br>Cost: " + this.cost() + " Trivial Groups"
             },
             canAfford() {
                 return getBuyableAmount('Grp', 11).gte(this.cost())
@@ -2414,13 +2428,6 @@ addLayer('NARng', {
                 return hasUpgrade(this.layer, 11)
             }
         },
-    },
-
-    automate() {
-        if (hasMilestone('Grp', 2)) {
-            buyBuyable(this.layer, 11)
-            buyBuyable(this.layer, 12)
-        }
     },
 })
 
@@ -2440,7 +2447,7 @@ addLayer('NARig', {
     baseAmount() { return player['NARg'].points },                        
 
     layerShown() {
-        return false
+        return true
     },
     
     tabFormat: [
@@ -2542,12 +2549,5 @@ addLayer('NARig', {
                 return hasUpgrade(this.layer, 12)
             }
         },
-    },
-
-    automate() {
-        if (hasMilestone('Grp', 2)) {
-            buyBuyable(this.layer, 11)
-            buyBuyable(this.layer, 12)
-        }
     },
 })
