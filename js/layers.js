@@ -81,6 +81,8 @@ addLayer('Set', {
                 return "Gregor Kempers blessing<br><br>Sets boost Set gain.<br><br>Currently: " + format(this.effect()) + "x to Set gain<br><br>Cost: 9,001 Sets"
             },
             effect() {
+                if (player.points.mul(-1).gte(0))
+                    return new Decimal(1)
                 return player.points.add(1).ln().add(1).pow((hasUpgrade('Set<sub>&lowast;</sub>', 15) ? 1.2 : 1))
             },
             canAfford() {
