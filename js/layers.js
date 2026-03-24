@@ -2365,7 +2365,7 @@ addLayer('NARng', {
     baseAmount() { return player['NARg'].points },                        
 
     layerShown() {
-        return true
+        return false
     },
     
     tabFormat: [
@@ -2440,7 +2440,7 @@ addLayer('NARig', {
     baseAmount() { return player['NARg'].points },                        
 
     layerShown() {
-        return true
+        return false
     },
     
     tabFormat: [
