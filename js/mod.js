@@ -56,6 +56,7 @@ function getMul() {
 	if (hasUpgrade('Grp', 12))
 		mul = mul.mul(upgradeEffect('Grp', 12))
 	mul = mul.mul(tmp['Set<sub>&lowast;</sub>'].effect)
+	mul = mul.mul(tmp['NARg'].effect)
 
 	return mul
 }

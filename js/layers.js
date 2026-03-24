@@ -59,7 +59,7 @@ addLayer('Set', {
                 player.points = player.points.sub(500)
             },
             unlocked () {
-                return hasUpgrade(this.layer, 12) && ! player['Mag'].points.gte(1) && ! hasUpgrade('Mag', 11) && ! hasUpgrade('Mag', 12) && ! hasUpgrade('Mag', 13)
+                return hasUpgrade(this.layer, 12) && ! player['Mag'].points.gte(1) && ! hasUpgrade('Mag', 11) && ! hasUpgrade('Mag', 12) && ! hasUpgrade('Mag', 13) && ! hasMilestone('NARg', 0)
             }
         },
         14: {
@@ -448,27 +448,27 @@ addLayer('Mag', {
         0: {
             requirementDescription: "100 Magmas",
             effectDescription: "Autobuy Empty Sets",
-            done() { return player[this.layer].points.gte(100) }
+            done() { return player[this.layer].points.gte(100) || hasMilestone('NARg', 0) }
         },
         1: {
             requirementDescription: "1,000 Magmas",
             effectDescription: "You may choose once more",
-            done() { return player[this.layer].points.gte(1000) }
+            done() { return player[this.layer].points.gte(1000) || hasMilestone('NARg', 0) }
         },
         2: {
             requirementDescription: "1,000,000 Magmas",
             effectDescription: "Autobuy Singletons",
-            done() { return player[this.layer].points.gte(1e6) }
+            done() { return player[this.layer].points.gte(1e6) || hasMilestone('NARg', 0) }
         },
         3: {
             requirementDescription: "10,000,000 Magmas",
             effectDescription: "Get 10% of Magma gain per second",
-            done() { return player[this.layer].points.gte(1e7) }
+            done() { return player[this.layer].points.gte(1e7) || hasMilestone('NARg', 0) }
         },
         4 : {
             requirementDescription: "100,000,000 Magmas",
             effectDescription: "Your choices did not matter",
-            done() { return player[this.layer].points.gte(1e8) }
+            done() { return player[this.layer].points.gte(1e8) || hasMilestone('NARg', 0) }
         },
     },  
 
@@ -2250,7 +2250,8 @@ addLayer('Grp', {
 addLayer('NARg', {
     startData() { return {                  
         unlocked: true,                    
-        points: new Decimal(0),             
+        points: new Decimal(0),
+        total: new Decimal(0),         
     }},
 
     color: "#794b8f",                      
@@ -2269,7 +2270,7 @@ addLayer('NARg', {
     roundUpCost : true,
 
     effect() {
-        return player[this.layer].points.add(1).ln().add(1)
+        return player[this.layer].total.add(1).pow(2)
     },
 
     gainMult() {
@@ -2283,13 +2284,13 @@ addLayer('NARg', {
     },
 
     layerShown() {
-        return hasUpgrade('Grp', 19) || player[this.layer].points.gte(1)
+        return hasUpgrade('Grp', 19) || player[this.layer].points.gte(1) || hasUpgrade(this.layer, 11) || hasUpgrade(this.layer, 12)
     },
     
     tabFormat: [
         "main-display",
         ["display-text",
-            function() { return "which boost Set gain by " + format(tmp[this.layer].effect) },
+            function() { return "your total boosts Set gain by " + format(tmp[this.layer].effect) },
         ],
         "blank",
         "prestige-button",
@@ -2334,7 +2335,12 @@ addLayer('NARg', {
     },
 
     milestones: {
-    },  
+        0: {
+            requirementDescription: "1 Non-Abelian Rg total",
+            effectDescription: "Keep your Magma milestones on resets",
+            done() { return player[this.layer].total.gte(1) }
+        },
+    }, 
 
     passiveGeneration() {
         return new Decimal(0)
@@ -2376,89 +2382,36 @@ addLayer('NARng', {
     upgrades: {
         11: {
             fullDisplay() {
-                return "At first, there was nothing.<br><br>Unlocks the Empty Quasigroup.<br><br>Cost: 1 Magma"
+                return "Should I call this zero?<br><br>Unlocks the Trivial Non-Abelian Rng.<br><br>Cost: 1 Non-Abelian Rg"
             },
             canAfford() {
-                return player['Mag'].points.gte(1)
+                return player['NARg'].points.gte(1)
             },
             pay() {
-                player['Mag'].points = player['Mag'].points.sub(1)
+                player['NARg'].points = player['NARg'].points.sub(1)
             },
-        },
-        12: {
-            fullDisplay() {
-                return "At last, there was conothing.<br><br>Unlocks the Trivial Quasigroup.<br><br>Cost: 10 Magmas"
-            },
-            canAfford() {
-                return player['Mag'].points.gte(10)
-            },
-            pay() {
-                player['Mag'].points = player['Mag'].points.sub(10)
-            },
-            unlocked () {
-                return hasUpgrade(this.layer, 11)
-            }
-        },
-        21: {
-            fullDisplay() {
-                return "Finite Quasigroups are Latin Squares.<br><br>Quasigroup count boosts Magma gain.<br><br>Currently: " + format(this.effect()) + "x to Magma gain<br><br>Cost: 150 Magmas"
-            },
-            effect () {
-                return getBuyableAmount(this.layer, 11).add(getBuyableAmount(this.layer, 12)).mul(2).add(1)
-            },
-            canAfford() {
-                return player['Mag'].points.gte(150)
-            },
-            pay() {
-                player['Mag'].points = player['Mag'].points.sub(150)
-            },
-            unlocked () {
-                return hasUpgrade(this.layer, 12)
-            }
         },
     },
 
     buyables: {
-        11: {
-            title: "&empty;",
-            cost(x) { return Math.round(new Decimal(2.5).pow(x.add(1)).mul(buyableEffect('AssQGrp', 12)).mul(tmp['Grp'].effect)) },
+        12: {
+            title: "&lowast;",
+            cost(x) { return Math.round(new Decimal(1.6).pow(x.add(1))) },
             effect(x) {
-                return x.mul(new Decimal(0.5).add(buyableEffect('Grp', 14))).mul((hasUpgrade('Loop', 22)) ? buyableEffect('Loop', 11) : 1).pow(buyableEffect('FlexMag', 11))
+                return new Decimal(0.5).mul(x)
             },
             display() {
-                return "You have " + getBuyableAmount(this.layer, this.id) + " Empty Quasigroups<br><br>Effect: +" + format(buyableEffect(this.layer, this.id)) + " to Empty Set effect base<br><br>Cost: " + this.cost() + " Empty Sets"
+                return "You have " + getBuyableAmount(this.layer, this.id) + " Trivial Non-Abelian Rngs<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x to Trivial Group effect base<br><br>Cost: " + this.cost() + " Trivial Groups"
             },
             canAfford() {
-                return getBuyableAmount('Set', 11).gte(this.cost())
+                return getBuyableAmount('Grp', 11).gte(this.cost())
             },
             buy() {
-                if (! hasMilestone('Grp', 2))
-                    setBuyableAmount('Set', 11, getBuyableAmount('Set', 11).sub(this.cost()))
+                setBuyableAmount('Grp', 11, getBuyableAmount('Grp', 11).sub(this.cost()))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
                 return hasUpgrade(this.layer, 11)
-            }
-        },
-        12: {
-            title: "&lowast;",
-            cost(x) { return Math.round(new Decimal(1.5).pow(x.add(1)).mul(tmp['Grp'].effect).sub(buyableEffect('AssQGrp', 11))) },
-            effect(x) {
-                return new Decimal(1.25).mul(buyableEffect('Loop', 11)).pow(x)
-            },
-            display() {
-                return "You have " + getBuyableAmount(this.layer, this.id) + " Trivial Quasigroups<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x to Singleton effect base<br><br>Cost: " + this.cost() + " Singletons"
-            },
-            canAfford() {
-                return getBuyableAmount('Set', 12).gte(this.cost())
-            },
-            buy() {
-                if (! hasMilestone('Grp', 2))
-                    setBuyableAmount('Set', 12, getBuyableAmount('Set', 12).sub(Math.min(new Decimal(0), this.cost())))
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-            },
-            unlocked() {
-                return hasUpgrade(this.layer, 12)
             }
         },
     },
