@@ -123,7 +123,7 @@ addLayer('Set', {
         },
         12: {
             title: "&lowast;",
-            cost(x) { return Math.round(new Decimal(2).pow(x.add(1)).mul(tmp['Grp'].effect).sub(buyableEffect('SGrp', 11))) },
+            cost(x) { return Math.round(new Decimal(2).pow(x.add(1)).mul(tmp['Grp'].effect).sub(buyableEffect('SGrp', 11)).sub(1)) },
             effect(x) {
                 return x.add((hasUpgrade('FlexMag', 12)) ? Math.round(getBuyableAmount(this.layer, 12).div(2)) : 0).add(1).mul(buyableEffect('QGrp', 12)).pow(tmp['AltMag'].effect)
             },
