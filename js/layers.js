@@ -128,7 +128,7 @@ addLayer('Set', {
                 return x.add((hasUpgrade('FlexMag', 12)) ? Math.round(getBuyableAmount(this.layer, 12).div(2)) : 0).add(1).mul(buyableEffect('QGrp', 12)).pow(tmp['AltMag'].effect)
             },
             display() {
-                if (hasUpgrade('SGrp', 21))
+                if (hasUpgrade('FlexMag', 12))
                     return "You have " + getBuyableAmount(this.layer, this.id) + " + " + Math.round(getBuyableAmount(this.layer, 12).div(2)) + " Singletons<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x Set and Magma gain<br><br>Cost: " + this.cost() + " Empty Sets"
                 if (hasUpgrade('SGrp', 21))
                     return "You have " + getBuyableAmount(this.layer, this.id) + " Singletons<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x Set and Magma gain<br><br>Cost: " + this.cost() + " Empty Sets"
