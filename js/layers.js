@@ -160,7 +160,7 @@ addLayer('Set', {
                 player['MLoop'].total = player['MLoop'].total.add(1)
             },
             unlocked() {
-                return true
+                return false
             }
         },
         16: {
@@ -177,7 +177,7 @@ addLayer('Set', {
                 player['Grp'].total = player['Grp'].total.add(1)
             },
             unlocked() {
-                return true
+                return false
             }
         },
         17: {
@@ -193,7 +193,7 @@ addLayer('Set', {
                 player.points = player.points.mul(10)
             },
             unlocked() {
-                return true
+                return false
             }
         },
         18: {
@@ -209,7 +209,7 @@ addLayer('Set', {
                 player['Mag'].points = player['Mag'].points.mul(10)
             },
             unlocked() {
-                return true
+                return false
             }
         },
         19: {
@@ -225,7 +225,7 @@ addLayer('Set', {
                 player['Mag'].points = player['Mag'].points.add(10)
             },
             unlocked() {
-                return true
+                return false
             }
         },
     },
@@ -2381,7 +2381,7 @@ addLayer('NARng', {
     baseAmount() { return player['NARg'].points },                        
 
     layerShown() {
-        return true
+        return false
     },
     
     tabFormat: [
@@ -2449,7 +2449,7 @@ addLayer('NARig', {
     baseAmount() { return player['NARg'].points },                        
 
     layerShown() {
-        return true
+        return false
     },
     
     tabFormat: [
