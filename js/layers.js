@@ -859,7 +859,7 @@ addLayer('QGrp', {
             },
             buy() {
                 if (! hasMilestone('Grp', 2))
-                    setBuyableAmount('Set', 12, getBuyableAmount('Set', 12).sub(Math.min(new Decimal(0), this.cost())))
+                    setBuyableAmount('Set', 12, getBuyableAmount('Set', 12).sub(Math.max(this.cost(), 0)))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
@@ -2528,27 +2528,6 @@ addLayer('NARig', {
             },
             unlocked() {
                 return hasUpgrade(this.layer, 11)
-            }
-        },
-        12: {
-            title: "&lowast;",
-            cost(x) { return Math.round(new Decimal(1.5).pow(x.add(1)).mul(tmp['Grp'].effect).sub(buyableEffect('AssQGrp', 11))) },
-            effect(x) {
-                return new Decimal(1.25).mul(buyableEffect('Loop', 11)).pow(x)
-            },
-            display() {
-                return "You have " + getBuyableAmount(this.layer, this.id) + " Trivial Quasigroups<br><br>Effect: " + format(buyableEffect(this.layer, this.id)) + "x to Singleton effect base<br><br>Cost: " + this.cost() + " Singletons"
-            },
-            canAfford() {
-                return getBuyableAmount('Set', 12).gte(this.cost())
-            },
-            buy() {
-                if (! hasMilestone('Grp', 2))
-                    setBuyableAmount('Set', 12, getBuyableAmount('Set', 12).sub(Math.min(new Decimal(0), this.cost())))
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-            },
-            unlocked() {
-                return hasUpgrade(this.layer, 12)
             }
         },
     },
